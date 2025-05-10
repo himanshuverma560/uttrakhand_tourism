@@ -174,14 +174,16 @@
                                     </div>
                                 </div>
                                 <div class="mb-3">
+                                    <?php $captcha = mt_rand(9999,99999); ?>
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div class="captcha-section d-flex align-items-center gap-2">
-                                            <input type="number" required class="form-control" placeholder="Enter Captcha"
+                                            <input type="number" required class="form-control" name="enter_captcha" placeholder="Enter Captcha"
                                                 style="width: 150px;">
-                                            <span class="captcha-code"><?php echo mt_rand(9999,99999); ?></span>
+                                            <span class="captcha-code"><?php echo $captcha; ?></span>
                                             <button type="button" class="btn btn-link refresh-captcha p-0">
                                                 <i class="fas fa-sync-alt"></i>
                                             </button>
+                                            <input type="hidden" name="captcha" value="{{$captcha}}">
                                         </div>
                                     </div>
                                 </div>

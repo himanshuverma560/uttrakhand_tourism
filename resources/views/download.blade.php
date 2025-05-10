@@ -13,6 +13,11 @@
 
                 <!-- Main Dashboard Area -->
                 <div class="col-md-9">
+                    @if (session('success'))
+                    <div class="alert alert-success">
+                        {{ session('success') }}
+                    </div>
+                @endif
                     <div class="row g-4">
                         <!-- Download Registration -->
                         <div class="col-12 download-registration">
@@ -32,35 +37,75 @@
                                         </div> -->
                                     </div>
                                     
-                                    <a href="addPilgrim.html" class="btn btn-add-pilgrim me-4 mb-3">
+                                    {{-- <a href="addPilgrim.html" class="btn btn-add-pilgrim me-4 mb-3">
                                         Add New Pilgrim/Tourist
-                                    </a>
+                                    </a> --}}
+                                    
                                     <div class="table-responsive">
                                         <table class="table table-bordered">
                                             <thead>
                                                 <tr>
                                                     <th>Name</th>
                                                     <th>Mobile Number</th>
-                                                    <th>Vehicle No</th>
+                                                    <th>Tour ID</th>
                                                     <th>Action</th>
                                                     <th>Download Registration Letter</th>
                                                     <th>Certificate</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
+                                                @foreach ($data as $value)
+                                                    
+                                                @php
+                                                    $date_wise_destination = json_decode($value->tour->date_wise_destination, true);
+                                                    $destination = implode(', ', array_column($date_wise_destination, 'dham'))
+                                                
+                                                @endphp
+
                                                 <tr>
-                                                    <td><a href="#" class="text-primary">Tadhani Sahil Babubhai</a></td>
-                                                    <td>9725300332</td>
-                                                    <td></td>
+                                                    <td><a href="#" class="text-primary">{{$value->name}}</a></td>
+                                                    <td>{{$value->mobile}}</td>
+                                                    <td>{{$value->tour->tour_id}}</td>
                                                     <td>
                                                         <div class="d-flex justify-content-center gap-2">
-                                                            <button class="btn btn-sm btn-link p-0"><i class="fas fa-edit"></i></button>
-                                                            <!-- <button class="btn btn-sm btn-link p-0"><i class="fas fa-eye"></i></button> -->
+                                                            <a href="{{route('editPligrim', ['id' => $value->id])}}" class="btn btn-sm btn-link p-0"><i class="fas fa-edit"></i></a>
+                                                            <a href="{{ route('editPligrim', ['id' => $value->id, 'mode' => 'view']) }}" class="btn btn-sm btn-link p-0">
+                                                                <i class="fas fa-eye"></i>
+                                                            </a>
                                                         </div>
+                                                    </td>   
+                                                    <td><button class="btn btn-danger download-pdf"
+                                                        data-regno="{{Auth::user()->unique_id}}"
+                                                        data-group-id="{{$value->tour_id}}"
+                                                        data-destination="{{$destination}}"
+                                                        data-tour-days="5"
+                                                        data-selected-dates="{{$value->tour->start_date_formatted .' To '. $value->tour->end_date_formatted}}"
+                                                        data-full-name="{{$value->name}}"
+                                                        data-gender="{{$value->gender}}"
+                                                        data-age="{{$value->age}}"
+                                                        data-diseases="NA"
+                                                        data-aadhar="{{$value->aadhar_card}}"
+                                                        data-email="{{$value->email}}"
+                                                        data-mobile="{{$value->mobile}}"
+                                                        data-address="{{$value->address}}"
+                                                        data-state="{{$value->state}}"
+                                                        data-photo-url="{{$value->getProfileImageUrl()}}"
+                                                        data-qr-url="https://example.com/qr.jpg",
+                                                        data-city="{{$value->city}}",
+                                                        data-country="{{$value->country}}",
+                                                        data-district="{{$value->district}}",
+                                                        data-contact-number="{{$value->contact_number}}",
+                                                        data-contact-person="{{$value->contact_person}}",
+                                                        data-contact-relation="{{$value->contact_relation}}",
+                                                        data-vehicle-details="{{$value->vehicle_details}}",
+                                                        
+                                                        
+
+                                                    >Download PDF</button>
                                                     </td>
-                                                    <td><button class="btn btn-danger download-pdf" data-pilgrim-name="Tadhani Sahil Babubhai" data-mobile="9725300332">Download PDF</button></td>
                                                     <td></td>
                                                 </tr>
+                                                @endforeach
                                             </tbody>
                                         </table>
                                     </div>

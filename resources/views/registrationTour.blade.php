@@ -13,6 +13,11 @@
 
                 <!-- Main Dashboard Area -->
                 <div class="col-md-9">
+                    @if (session('success'))
+                                <div class="alert alert-success">
+                                    {{ session('success') }}
+                                </div>
+                            @endif
                     <div class="row g-4">
                         <!-- Registration for Tour -->
                         <div class="tour-registration-section">
@@ -26,7 +31,8 @@
                                     </div>
                                 </div>
                                 <div class="card-body">
-                                    <form id="tourRegistrationForm">
+                                    <form id="tourRegistrationForm" action="{{route('store.tour')}}" method="post">
+                                        @csrf
                                         <!-- Tour Duration Section -->
                                         <div class="tour-section mb-4">
                                             <div class="section-header p-3 d-flex justify-content-between align-items-center">
@@ -40,11 +46,11 @@
                                                 <div class="row">
                                                     <div class="col-md-6 mb-3">
                                                         <label class="form-label">Tour Start & End Date<span class="text-danger">*</span></label>
-                                                        <input type="text" class="form-control daterange" placeholder="Please Select Tour Date" readonly>
+                                                        <input type="text" name="date_rang" class="form-control daterange" placeholder="Please Select Tour Date" readonly>
                                                     </div>
                                                     <div class="col-md-6 mb-3">
                                                         <label class="form-label">No. of Tourists ( Max 6)<span class="text-danger">*</span></label>
-                                                        <input type="number" class="form-control" placeholder="No. of Tourists" min="1" max="6">
+                                                        <input type="number" class="form-control" name="number_of_tourist" placeholder="No. of Tourists" min="1" max="6">
                                                     </div>
                                                 </div>
                                             </div>
@@ -63,7 +69,7 @@
                                                 <div class="row">
                                                     <div class="col-md-6 mb-3">
                                                         <label class="form-label">Mode of Travel for Dham<span class="text-danger">*</span></label>
-                                                        <select class="form-select" id="travelMode">
+                                                        <select class="form-select" id="travelMode" name="mode_of_travel">
                                                             <option value="">Select</option>
                                                             <option value="By Road">By Road</option>
                                                             <option value="By Helicopter">By Helicopter</option>
@@ -72,7 +78,7 @@
                                                     </div>
                                                     <div class="col-md-6 mb-3">
                                                         <label class="form-label">Type of Transportation<span class="text-danger">*</span></label>
-                                                        <select class="form-select" id="transportationType" disabled>
+                                                        <select class="form-select" id="transportationType" name="type_of_transport" disabled>
                                                             <option value="">Select</option>
                                                         </select>
                                                     </div>
@@ -93,7 +99,7 @@
                                                 <div id="destinationContainer">
                                                     <div class="destination-row row mb-3">
                                                         <div class="col-md-5">
-                                                            <select class="form-select" name="dham">
+                                                            <select class="form-select" name="dham[]">
                                                                 <option value="">Plan your destination</option>
                                                                 <option value="Yamunotri">Yamunotri</option>
                                                                 <option value="Gangotri">Gangotri</option>
@@ -103,7 +109,7 @@
                                                             </select>
                                                         </div>
                                                         <div class="col-md-5">
-                                                            <input type="date" class="form-control" name="dhamDate">
+                                                            <input type="date" class="form-control" name="dhamDate[]">
                                                         </div>
                                                         <div class="col-md-2 d-flex">
                                                             <button type="button" class="btn btn-danger remove-destination">

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
-    @include('partials.user_head')
+@include('partials.user_head')
+
 <body>
     @include('partials.user_nav')
 
@@ -13,18 +14,25 @@
 
                 <!-- Main Dashboard Area -->
                 <div class="col-md-9">
+                    @if (session('success'))
+                                <div class="alert alert-success">
+                                    {{ session('success') }}
+                                </div>
+                            @endif
                     <div class="row g-4">
                         <!-- View Tours -->
                         <div class="tour-listing-section">
                             <div class="card">
-                                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                                <div
+                                    class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
                                     <h5 class="mb-0">Plan Your Tour</h5>
                                 </div>
                                 <div class="card-body">
                                     <div class="d-flex justify-content-between align-items-center mb-4">
-                                        <a href="tourRegister.html" class="btn btn-info text-white">Add New Tour</a>
+                                        <a href="{{ route('tour') }}" class="btn btn-info text-white">Add New Tour</a>
                                         <div class="d-flex gap-2 align-items-center">
-                                            <input type="text" class="form-control" placeholder="Search By Tour Name">
+                                            <input type="text" class="form-control"
+                                                placeholder="Search By Tour Name">
                                             <button class="btn btn-info text-white">Search</button>
                                         </div>
                                     </div>
@@ -47,27 +55,49 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <tr>
-                                                    <td>1</td>
-                                                    <td>07-05-2025</td>
-                                                    <td>GP123456</td>
-                                                    <td>Char Dham Yatra</td>
-                                                    <td>10-05-2025 to 20-05-2025</td>
-                                                    <td>Kedarnath, Badrinath</td>
-                                                    <td>
-                                                        <div class="d-flex gap-2">
-                                                            <button class="btn btn-sm btn-info view-pilgrims" data-bs-toggle="modal" data-bs-target="#pilgrimDetailsModal">
-                                                                <i class="fas fa-eye"></i>
-                                                            </button>
-                                                            <button class="btn btn-sm btn-primary">
-                                                                <i class="fas fa-edit"></i>
-                                                            </button>
-                                                            <a href="{{route('addPligrim')}}" class="btn btn-sm btn-success">
-                                                                Add Pilgrim
-                                                            </a>
-                                                        </div>
-                                                    </td>
-                                                </tr>
+                                                @forelse ($tours as $index => $tour)
+                                                    <tr>
+                                                        <td>{{ $index + 1 }}</td>
+                                                        <td>{{ $tour->created_at->format('d-m-Y') }}</td>
+                                                        <td>{{ $tour->tour_id }}</td>
+                                                        <td>Char Dham Yatra</td>
+                                                        <!-- You can make this dynamic if needed -->
+                                                        <td>{{ \Carbon\Carbon::parse($tour->start_date)->format('d-m-Y') }}
+                                                            to
+                                                            {{ \Carbon\Carbon::parse($tour->end_date)->format('d-m-Y') }}
+                                                        </td>
+                                                        <td>
+                                                            <?php
+                                                            $date_wise_destination = json_decode($tour->date_wise_destination, true); // decode into array
+                                                            ?>
+
+                                                            {{ implode(', ', array_column($date_wise_destination, 'dham')) }}
+
+                                                        </td>
+
+                                                        <td>
+                                                            <div class="d-flex gap-2">
+                                                                {{-- <button class="btn btn-sm btn-info view-pilgrims"
+                                                                    data-bs-toggle="modal"
+                                                                    data-bs-target="#pilgrimDetailsModal">
+                                                                    <i class="fas fa-eye"></i>
+                                                                </button> --}}
+                                                                <a href="{{ route('tour.edit', $tour->id) }}"
+                                                                    class="btn btn-sm btn-primary">
+                                                                    <i class="fas fa-edit"></i>
+                                                                </a>
+                                                                <a href="{{ route('addPligrim', ['id' => $tour->id]) }}"
+                                                                    class="btn btn-sm btn-success">
+                                                                    Add Pilgrim
+                                                                </a>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                @empty
+                                                    <tr>
+                                                        <td colspan="7" class="text-center">No tours found.</td>
+                                                    </tr>
+                                                @endforelse
                                             </tbody>
                                         </table>
                                     </div>
@@ -81,7 +111,8 @@
     </div>
 
     <!-- Pilgrim Details Modal -->
-    <div class="modal fade" id="pilgrimDetailsModal" tabindex="-1" aria-labelledby="pilgrimDetailsModalLabel" aria-hidden="true">
+    <div class="modal fade" id="pilgrimDetailsModal" tabindex="-1" aria-labelledby="pilgrimDetailsModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
@@ -118,4 +149,5 @@
 
     @include('partials.user_footer')
 </body>
+
 </html>

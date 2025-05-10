@@ -2,22 +2,28 @@
 
 namespace App\Http\Controllers;
 
+use Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use App\Models\User;
+use App\Models\Tour;
+use App\Models\Pilgrim;
 
 class WebsiteController extends Controller
 {
-    public function index() {
+    public function index()
+    {
         return view('welcome');
     }
 
-    public function registration() {
+    public function registration()
+    {
         return view('registration');
     }
 
-    public function store(Request $request) {
+    public function store(Request $request)
+    {
 
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
@@ -43,7 +49,7 @@ class WebsiteController extends Controller
                 ->withInput();
         }
 
-        User::create([
+        $user = User::create([
             'name' => $request->name,
             'mobile' => $request->mobile,
             'country_code' => $request->country_code ?? '+91',
@@ -55,28 +61,171 @@ class WebsiteController extends Controller
             'gst_number' => $request->gst_number,
             'state' => $request->state ?? ''
         ]);
-    
+
+        do {
+            $uniqueNumber = str_pad(mt_rand(1000000000, 9999999999), 10, '0', STR_PAD_LEFT);  // Generate a 10-digit number
+        } while (User::where('unique_id', $uniqueNumber)->exists());
+
+        $user->unique_id = $uniqueNumber;
+        $user->save();
+
         return redirect()->back()->with('success', 'Registration successful!');
     }
 
 
-    public function dashboard() {
+    public function dashboard()
+    {
         return view('dashboard');
     }
 
-    public function tour() {
+    public function tour()
+    {
         return view('registrationTour');
     }
 
-    public function viewTour() {
-        return view('viewTour');
+    public function viewTour()
+    {
+        $tours = Tour::where('user_id', Auth::id())
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return view('viewTour', compact('tours'));
     }
 
-    public function addPligrim() {
-        return view('add_pilgrim');
+    public function addPligrim($id)
+    {
+        return view('add_pilgrim', compact('id'));
     }
 
-    public function download() {
-        return view('download');
+    public function editPligrim($id)
+    {
+        $pilgrim = Pilgrim::where('id', $id)
+            ->where('user_id', Auth::user()->id)
+            ->first();
+        return view('update_pilgrim', compact('id', 'pilgrim'));
     }
+
+    public function download()
+    {
+
+        $data = Pilgrim::with('tour')
+            ->where('user_id', Auth::user()->id)
+            ->get();
+        return view('download', compact('data'));
+    }
+
+    public function storeTour(Request $request)
+    {
+        // Split the date range
+        [$startDate, $endDate] = explode(' - ', $request->date_rang);
+
+        // Build date-wise destination array
+        $destinations = [];
+        foreach ($request->dham as $index => $dhamName) {
+            $destinations[] = [
+                'dham' => $dhamName,
+                'date' => $request->dhamDate[$index] ?? null,
+            ];
+        }
+
+        do {
+            $uniqueNumber = str_pad(mt_rand(1, 99999999), 8, '0', STR_PAD_LEFT);
+            $tourId = 'UK-' . $uniqueNumber;
+        } while (Tour::where('tour_id', $tourId)->exists());
+
+
+
+        // Store in the database
+        Tour::create([
+            'user_id' => auth()->id(),
+            'start_date' => date('Y-m-d', strtotime($startDate)),
+            'end_date' => date('Y-m-d', strtotime($endDate)),
+            'number_of_tourist' => $request->number_of_tourist,
+            'mode_of_travel' => $request->mode_of_travel,
+            'type_of_transport' => $request->type_of_transport,
+            'date_wise_destination' => json_encode($destinations),
+            'status' => 0,
+            'tour_id' => $tourId
+        ]);
+
+        return redirect()->route('viewTour')->with('success', 'Tour registration successful!');
+    }
+
+
+    public function editTour($id)
+    {
+        $tour = Tour::findOrFail($id);
+        return view('updateTour', compact('tour'));
+    }
+
+    public function updateTour(Request $request, $id)
+    {
+        $tour = Tour::findOrFail($id);
+        // similar logic as store with date parsing and JSON encoding
+        $range = explode(' - ', $request->date_rang);
+        $startDate = \Carbon\Carbon::parse($range[0])->format('Y-m-d');
+        $endDate = \Carbon\Carbon::parse($range[1])->format('Y-m-d');
+
+        $dateWiseDestination = [];
+        foreach ($request->dham as $index => $dham) {
+            $dateWiseDestination[] = [
+                'dham' => $dham,
+                'date' => $request->dhamDate[$index] ?? null,
+            ];
+        }
+
+        $tour->update([
+            'start_date' => $startDate,
+            'end_date' => $endDate,
+            'number_of_tourist' => $request->number_of_tourist,
+            'mode_of_travel' => $request->mode_of_travel,
+            'type_of_transport' => $request->type_of_transport,
+            'date_wise_destination' => json_encode($dateWiseDestination),
+        ]);
+
+        return redirect()->route('viewTour')->with('success', 'Tour updated successfully!');
+    }
+
+    public function createPligrim(Request $request, $id)
+    {
+        $data = $request->all();
+
+        if (isset($data['doctor'])) {
+            $data['doctor'] = 1;
+        }
+
+        if (!empty($data['medical'])) {
+            $data['medical'] = json_encode($data['medical']);
+        }
+
+        Pilgrim::updateOrCreate([
+            'user_id' => Auth::user()->id,
+            'tour_id' => $id
+        ], $data);
+
+        return redirect()->route('viewTour')->with('success', 'Pilgrim added successfully!');
+
+    }
+
+    public function updatePligrim(Request $request, $id)
+    {
+        $data = $request->all();
+        unset($data['_token']);
+
+        if (isset($data['doctor'])) {
+            $data['doctor'] = 1;
+        }
+
+        if (!empty($data['medical'])) {
+            $data['medical'] = json_encode($data['medical']);
+        }
+
+        Pilgrim::where('id', $id)
+            ->where('user_id', Auth::user()->id)
+            ->update($data);
+
+        return redirect()->route('download')->with('success', 'Pilgrim updated successfully!');
+
+    }
+
 }

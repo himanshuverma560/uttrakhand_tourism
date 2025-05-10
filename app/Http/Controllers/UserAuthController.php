@@ -12,7 +12,9 @@ class UserAuthController extends Controller
 {
     public function login(Request $request)
     {
-        
+        if ($request->captcha != $request->enter_captcha) {
+            return back()->with('error', 'Invalid Captcha.');
+        }
         $pilgrimType = $request->input('pilgrim_type');
 
         if ($pilgrimType === 'Indian Pilgrim') {

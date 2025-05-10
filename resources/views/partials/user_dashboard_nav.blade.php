@@ -12,9 +12,29 @@
     <div class="sidebar-menu">
         <ul class="nav flex-column">
             <li class="nav-item">
-                <a class="nav-link active" href="{{route('dashboard')}}">
+                <a class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}" href="{{route('dashboard')}}">
                     <i class="fas fa-home"></i>
                     Dashboard
+                </a>
+            </li>
+        </ul>
+    </div>
+    <div class="sidebar-menu">
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('viewTour') ? 'active' : '' }}" href="{{route('viewTour')}}">
+                    <i class="fas fa-plane"></i>
+                    Manage Tour Info
+                </a>
+            </li>
+        </ul>
+    </div>
+    <div class="sidebar-menu">
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('download') ? 'active' : '' }}" href="{{route('download')}}">
+                    <i class="fas fa-download"></i>
+                    Download Certificate
                 </a>
             </li>
         </ul>
