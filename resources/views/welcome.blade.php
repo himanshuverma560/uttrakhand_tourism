@@ -45,7 +45,7 @@
                     </div>
                 </div>
                 <div class="col-auto">
-                    <a href="registration.html" class="btn btn-registration">Registration Now</a>
+                    <a href="{{route('registration')}}" class="btn btn-registration">Registration Now</a>
                 </div>
             </div>
         </div>
