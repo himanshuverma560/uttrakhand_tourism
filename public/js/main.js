@@ -587,7 +587,7 @@ function verifyOTP() {
                 alert(res.message);
                 return false;
             }
-            collapsAll('block');
+            
             document.getElementById('aadhaarCardNumber').value = res.data.aadhaar_number;
             document.getElementById('name').value = res.data.name;
             document.getElementById('age').value = res.data.age;
@@ -614,6 +614,7 @@ function verifyOTP() {
             console.error(err);
         }
     });
+    collapsAll('block');
     clearInterval(timerInterval);
 }
 
