@@ -1,6 +1,3 @@
-const TIMER_DURATION = 60; // 60 seconds for OTP validity
-let timerInterval;
-
 document.addEventListener('DOMContentLoaded', function () {
     const categoryIcons = document.querySelectorAll('.category-icon');
     const articleContainer = document.getElementById('articleContainer');
@@ -412,49 +409,6 @@ otpInputs.forEach((input, index) => {
     });
 });
 
-// OTP Timer
-function startOTPTimer() {
-    let timeLeft = 120; // 2 minutes
-    const timerDisplay = document.getElementById('otpTimer');
-    const resendButton = document.getElementById('resendOTP');
-
-    clearInterval(timerInterval);
-    resendButton.disabled = true;
-
-    timerInterval = setInterval(() => {
-        timeLeft--;
-        const minutes = Math.floor(timeLeft / 60);
-        const seconds = timeLeft % 60;
-        timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-
-        if (timeLeft <= 0) {
-            clearInterval(timerInterval);
-            resendButton.disabled = false;
-        }
-    }, 1000);
-}
-
-// collaps all section default
-function collapsAll(value) {
-    const sections = document.querySelectorAll('.section');
-
-    sections.forEach((section, index) => {
-        const header = section.querySelector('#section-header');
-        const content = section.querySelector('#section-content');
-        const icon = header.querySelector('i');
-
-        content.style.display = value;
-        icon.classList.remove('fa-chevron-up');
-        icon.classList.add('fa-chevron-down');
-        if (value == 'none') {
-            header.style.pointerEvents = 'none';
-            header.style.opacity = '0.5';
-            header.style.cursor = 'not-allowed';
-        }
-        
-    });
-}
-collapsAll('none');
 
 // Form submissions
 if (mobileForm) {
@@ -481,142 +435,9 @@ if (resetPasswordForm) {
     });
 }
 
-const resendOtp = document.getElementById('resendOTP');
-if (resendOtp) {
-    resendOtp.addEventListener('click', function () {
-        startOTPTimer();
-        // Add resend OTP logic here
-    });
-}
 
 
 
-// OTP related functionality
-
-function requestOTP() {
-    const aadhaarNumber = document.getElementById('aadhaarNumber').value;
-    const consentCheckbox = document.getElementById('consentCheckbox');
-
-    if (!aadhaarNumber || aadhaarNumber.length !== 12) {
-        alert('Please enter a valid 12-digit Aadhaar number');
-        return;
-    }
-
-    if (!consentCheckbox.checked) {
-        alert('Please provide your consent to proceed');
-        return;
-    }
-
-
-
-    // Start OTP timer
-    startOTPTimer();
-
-    $.ajax({
-        url: '/user/aadhaar/generate-otp',
-        method: 'POST',
-        data: {
-            id_number: aadhaarNumber,
-            _token: window.csrfToken
-        },
-        success: function (response) {
-            console.log('OTP response:', response);
-            if (response.request_id && response.status == 'success') {
-                document.getElementById('request_id').value = response.request_id;
-                // Show OTP section
-                document.getElementById('otpSection').style.display = 'block';
-                document.getElementById('requestOtpBtn').disabled = true;
-                alert('OTP has been sent to your registered mobile number');
-            } else {
-                alert(response.message);
-                document.getElementById('requestOtpBtn').disabled = false;
-            }
-        },
-        error: function (xhr) {
-            alert('Error sending OTP');
-            console.error(xhr);
-            document.getElementById('requestOtpBtn').disabled = false;
-        }
-    });
-}
-
-function startOTPTimer() {
-    let timeLeft = TIMER_DURATION;
-    const timerElement = document.getElementById('otpTimer');
-
-    clearInterval(timerInterval);
-
-    timerInterval = setInterval(() => {
-        timeLeft--;
-        timerElement.textContent = `Resend OTP in ${timeLeft}s`;
-
-        if (timeLeft <= 0) {
-            clearInterval(timerInterval);
-            timerElement.textContent = '';
-            document.getElementById('requestOtpBtn').disabled = false;
-        }
-    }, 1000);
-}
-
-function resendOTP() {
-    requestOTP();
-}
-
-function verifyOTP() {
-    const otp = document.getElementById('otpInput').value;
-    const requestId = document.getElementById('request_id').value;
-    const tour_id = document.getElementById('tour_id').value;
-    if (!otp || otp.length !== 6) {
-        alert('Please enter a valid 6-digit OTP');
-        return;
-    }
-
-
-    $.ajax({
-        url: '/user/aadhaar/verify-otp',
-        type: 'POST',
-        data: {
-            request_id: requestId,
-            otp: otp,
-            _token: window.csrfToken,
-            tour_id: tour_id
-        },
-        success: function (res) {
-
-            if (res.status == 'error') {
-                alert(res.message);
-                return false;
-            }
-            
-            document.getElementById('aadhaarCardNumber').value = res.data.aadhaar_number;
-            document.getElementById('name').value = res.data.name;
-            document.getElementById('age').value = res.data.age;
-            $('input[name="gender"][value="' + res.data.gender + '"]').prop('checked', true);
-            document.getElementById('address').value = res.data.formatted_address;
-            document.getElementById('city').value = res.data.street;
-            document.getElementById('district').value = res.data.district;
-            document.getElementById('state').value = res.data.state;
-
-            // Automatically preview the Aadhaar card image
-            var imageUrl = res.data.profile_image_url;  // The image URL returned from the server
-            if (imageUrl) {
-                $('#passportPreview').html('<img src="' + imageUrl + '" alt="Aadhaar Card Preview" class="img-fluid">');
-            } else {
-                $('#passportPreview').html('<p>No image available.</p>');
-            }
-
-            console.log(res);
-
-            alert('OTP verified and form filled successfully!');
-        },
-        error: function (err) {
-            alert('OTP verification failed.');
-            console.error(err);
-        }
-    });
-    collapsAll('block');
-    clearInterval(timerInterval);
-}
 
 
 
