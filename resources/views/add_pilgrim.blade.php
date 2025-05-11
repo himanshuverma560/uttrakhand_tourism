@@ -490,7 +490,7 @@
                     if (imageUrl) {
                         $('#passportPreview').html(
                             '<img src="' + imageUrl + '" alt="Aadhaar Card Preview" class="img-fluid">'
-                            );
+                        );
                     } else {
                         $('#passportPreview').html('<p>No image available.</p>');
                     }
@@ -528,9 +528,9 @@
 
             });
         }
-        collapsAll('none');
-        @include('partials.user_footer')
+        collapsAll('none')
+    </script>
+    @include('partials.user_footer')
+</body>
 
-            <
-            /body> <
-            /html>
+</html>

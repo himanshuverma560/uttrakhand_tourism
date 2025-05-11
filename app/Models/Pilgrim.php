@@ -40,7 +40,7 @@ class Pilgrim extends Model
 
     public function aadhaarVerification()
     {
-        return $this->belongsTo(AadhaarVerification::class, 'tour_id', 'tour_id');
+        return $this->belongsTo(AadhaarVerification::class, 'aadhar_card', 'aadhaar_number');
     }
 
     public function getProfileImageUrl()

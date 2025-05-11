@@ -362,11 +362,11 @@
             </div>
         </div>
     </div>
-
-    @include('partials.user_footer')
     <script>
         window.csrfToken = '{{ csrf_token() }}';
     </script>
+    @include('partials.user_footer')
+    
 </body>
 
 </html>
