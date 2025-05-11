@@ -124,7 +124,7 @@
             </div>
         </div>
     </div>
-
+    <script src="{{ asset('js/download.js') }}"></script>
     <!-- Bootstrap JS -->
     @include('partials.user_footer')
 </body>
