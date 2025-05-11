@@ -117,7 +117,8 @@ class WebsiteController extends Controller
     public function storeTour(Request $request)
     {
         // Split the date range
-        [$startDate, $endDate] = explode(' - ', $request->date_rang);
+        $startDate = $request->start_date;
+        $endDate = $request->end_date;
 
         // Build date-wise destination array
         $destinations = [];
@@ -162,9 +163,9 @@ class WebsiteController extends Controller
     {
         $tour = Tour::findOrFail($id);
         // similar logic as store with date parsing and JSON encoding
-        $range = explode(' - ', $request->date_rang);
-        $startDate = \Carbon\Carbon::parse($range[0])->format('Y-m-d');
-        $endDate = \Carbon\Carbon::parse($range[1])->format('Y-m-d');
+        
+        $startDate = $request->start_date;
+        $endDate = $request->end_date;
 
         $dateWiseDestination = [];
         foreach ($request->dham as $index => $dham) {

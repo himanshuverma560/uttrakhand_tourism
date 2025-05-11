@@ -48,14 +48,17 @@
                                                     Note : Tour duration can be for maximum of 15 days only!
                                                 </div>
                                                 <div class="row">
-                                                    <div class="col-md-6 mb-3">
-                                                        <label class="form-label">Tour Start & End Date<span
-                                                                class="text-danger">*</span></label>
-                                                        <input type="text" name="date_rang"
-                                                            class="form-control daterange"
-                                                            placeholder="Please Select Tour Date" value="{{ $tour->start_date->format('d/m/Y') }} - {{ $tour->end_date->format('d/m/Y') }}" readonly>
+                                                    
+                                                    <div class="col-md-4 mb-3">
+                                                        <label class="form-label">Tour Start & End Date<span class="text-danger">*</span></label>
+                                                        <input type="date" name="start_date" value="{{$tour->start_date}}" class="form-control" placeholder="Please Select Tour Date" required>
                                                     </div>
-                                                    <div class="col-md-6 mb-3">
+
+                                                    <div class="col-md-4 mb-3">
+                                                        <label class="form-label">Tour Start & End Date<span class="text-danger">*</span></label>
+                                                        <input type="date" name="end_date" value="{{$tour->end_date}}" class="form-control" placeholder="Please Select Tour Date" required>
+                                                    </div>
+                                                    <div class="col-md-4 mb-3">
                                                         <label class="form-label">No. of Tourists ( Max 6)<span
                                                                 class="text-danger">*</span></label>
                                                         <input type="number" class="form-control"
