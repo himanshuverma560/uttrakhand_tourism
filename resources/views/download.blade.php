@@ -76,7 +76,7 @@
                                                     </td>   
                                                     <td><button class="btn btn-danger download-pdf"
                                                         data-regno="{{Auth::user()->unique_id}}"
-                                                        data-group-id="{{$value->tour_id}}"
+                                                        data-group-id="{{$value->tour->tour_id}}"
                                                         data-destination="{{$destination}}"
                                                         data-tour-days="5"
                                                         data-selected-dates="{{$value->tour->start_date_formatted .' To '. $value->tour->end_date_formatted}}"
