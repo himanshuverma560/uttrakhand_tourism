@@ -145,6 +145,8 @@ class WebsiteController extends Controller
             'mode_of_travel' => $request->mode_of_travel,
             'type_of_transport' => $request->type_of_transport,
             'date_wise_destination' => json_encode($destinations),
+            'driver_name' => $request->driver_name,
+            'vehicle_number' => $request->vehicle_number,
             'status' => 0,
             'tour_id' => $tourId
         ]);
@@ -182,6 +184,8 @@ class WebsiteController extends Controller
             'mode_of_travel' => $request->mode_of_travel,
             'type_of_transport' => $request->type_of_transport,
             'date_wise_destination' => json_encode($dateWiseDestination),
+            'driver_name' => $request->driver_name,
+            'vehicle_number' => $request->vehicle_number,
         ]);
 
         return redirect()->route('viewTour')->with('success', 'Tour updated successfully!');

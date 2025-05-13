@@ -26,6 +26,8 @@ class Tour extends Model
         'mode_of_travel',
         'type_of_transport',
         'date_wise_destination',
+        'driver_name',
+        'vehicle_number',
         'status',
         'tour_id'
     ];

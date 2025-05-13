@@ -98,7 +98,8 @@
                                                         data-contact-person="{{$value->contact_person}}",
                                                         data-contact-relation="{{$value->contact_relation}}",
                                                         data-vehicle-details="{{$value->vehicle_details}}",
-                                                        
+                                                        data-drivers-name="{{$value->drivers_name}}",
+                                                        data-vehicle-number="{{$value->vehicle_number}}"
                                                         
 
                                                     >Download PDF</button>

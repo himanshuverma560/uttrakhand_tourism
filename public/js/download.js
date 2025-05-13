@@ -30,6 +30,8 @@ document.querySelectorAll('.download-pdf').forEach(button => {
             contactPerson: btn.dataset.contactPerson,
             contactRelation: btn.dataset.contactRelation,
             vehicleDetails: btn.dataset.vehicleDetails,
+            driversName: btn.dataset.driversName || '—',
+            vehicleNumber: btn.dataset.vehicleNumber || '—',
         };
 
         // Create PDF
@@ -72,6 +74,29 @@ document.querySelectorAll('.download-pdf').forEach(button => {
         }
 
         // Add QR Code placeholder
+
+        // Add QR Code
+        const qrCodeSize = 40;
+        const qrX = doc.internal.pageSize.width - 60;
+        const qrY = 40;
+
+        // Create temporary container for QR code
+        const qrContainer = document.createElement("div");
+        const qr = new QRCode(qrContainer, {
+            text: 'Aadhar Number :- ' + pilgrimData.aadhar,
+            width: qrCodeSize * 4,
+            height: qrCodeSize * 4
+        });
+
+        // Get QR code as data URL
+        const canvas = qrContainer.querySelector('canvas');
+        const qrCodeDataUrl = canvas.toDataURL("image/jpeg");
+
+        // Add QR code to PDF
+        doc.addImage(qrCodeDataUrl, 'JPEG', qrX, qrY, qrCodeSize, qrCodeSize);
+        doc.setFontSize(8);
+        doc.text('Scan for Aadhar', qrX + qrCodeSize / 2, qrY + qrCodeSize + 5, { align: 'center' });
+
 
 
 
@@ -154,8 +179,119 @@ document.querySelectorAll('.download-pdf').forEach(button => {
         currentY += lineHeight;
 
         addRow('Mode of Travel for Dham', pilgrimData.vehicleDetails, currentY);
+        currentY += lineHeight;
 
+        addRow(`Driver's Name`, pilgrimData.driversName, currentY);
+        currentY += lineHeight;
 
+        addRow('Vehicle Number', pilgrimData.vehicleNumber, currentY);
+        currentY += lineHeight;
+
+        // Add a new page
+        doc.addPage();
+
+        // Reset Y position for new page
+        currentY = 20;
+
+        // Add title for the new page
+        doc.setFontSize(14);
+        doc.setFont(undefined, 'bold');
+        doc.setTextColor(0, 0, 0);
+        doc.text('Important Directions', 105, currentY, { align: 'center' });
+
+        currentY += 10;
+        doc.setFontSize(10);
+
+        // Add instructions
+        doc.setFontSize(12);
+        doc.text("1. Do and Don'ts -", 20, currentY);
+        doc.setFont(undefined, 'normal');
+        currentY += 15;
+
+        // Create table headers
+        doc.setFillColor(211, 211, 211); // Light gray background
+        doc.rect(20, currentY - 5, 170, 10, 'F');
+        doc.rect(20, currentY - 5, 170, 10, 'S'); // Border
+        doc.rect(20, currentY - 5, 30, 10, 'S'); // S.No. column border
+        doc.rect(50, currentY - 5, 70, 10, 'S'); // Do's column border
+
+        doc.setFontSize(10);
+        doc.text("S.No.", 25, currentY);
+        doc.text("Do's", 80, currentY);
+        doc.text("Don'ts", 125, currentY);
+        currentY += 10;
+
+        // Table content
+        const tableContent = [
+            ["1", "Compulsory Registration", "Do not Overspeed in Hills"],
+            ["2", "Keep the Registration certificate ready at the verification point", "Do not Litter Garbage"],
+            ["3", "Collect Dham darshan slot token for smooth and hassle free darshan", "Do not Consume Alcohol/Tobacco"],
+            ["4", "Acclimatization strongly recommended for people suffering from chronic disease", "Do not Drink & Drive"],
+            ["5", "Carry your prescribed medicines, if Any", "Do not use Private Vehicles as Taxi"],
+            ["6", "Park the Vehicle in the Right Place", "Do not defecate in Open"]
+        ];
+
+        tableContent.forEach((row, index) => {
+            // Draw row borders
+            doc.rect(20, currentY - 5, 170, 10, 'S');
+            doc.rect(20, currentY - 5, 30, 10, 'S');
+            doc.rect(50, currentY - 5, 70, 10, 'S');
+
+            // Add text
+            doc.text(row[0], 25, currentY);
+
+            // Handle multi-line text for Do's column
+            const doText = doc.splitTextToSize(row[1], 65);
+            doc.text(doText, 55, currentY);
+
+            // Handle multi-line text for Don'ts column
+            const dontText = doc.splitTextToSize(row[2], 65);
+            doc.text(dontText, 125, currentY);
+
+            currentY += 10;
+        });
+
+        currentY += 10;
+
+        // Add Things to Carry section
+        doc.setFontSize(12);
+        doc.setFont(undefined, 'bold');
+        doc.text("2. Things to Carry -", 20, currentY);
+        doc.setFont(undefined, 'normal');
+        doc.setFontSize(10);
+        currentY += 10;
+
+        const thingsToCarry = [
+            "a) Warm Cloth (Jacket, Shawl, Gloves, etc)",
+            "b) Valid Personal ID Proof"
+        ];
+
+        thingsToCarry.forEach(item => {
+            doc.text(item, 20, currentY);
+            currentY += 10;
+        });
+
+        //logo
+        currentY += 10;
+        doc.setLineWidth(0.5);
+        doc.line(0, currentY, 560, currentY);
+        // Add powered by section
+        const poweredByY = currentY + 25; // Position at bottom
+        const pageWidth = doc.internal.pageSize.width;
+
+        // Add Uttarakhand logo on left
+        doc.addImage('../images/logo.jpg', 'JPEG', 20, poweredByY - 20, 30, 20);
+
+        // Add Ethics Infotech logo on right
+        doc.addImage('../images/pdf_logo.png', 'PNG', pageWidth - 50, poweredByY - 20, 30, 20);
+
+        // Add centered "Powered by" text
+        doc.setFontSize(12);
+        doc.setTextColor(0, 0, 0);
+        doc.text('Powered by Ethics Infotech LLP', pageWidth / 2, poweredByY - 10, { align: 'center' });
+        currentY += 35;
+        doc.setLineWidth(0.5);
+        doc.line(0, currentY, 560, currentY);
         // Add footer note
         doc.setFontSize(10);
         doc.setTextColor(0, 0, 0);

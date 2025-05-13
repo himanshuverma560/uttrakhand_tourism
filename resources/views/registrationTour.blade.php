@@ -49,27 +49,36 @@
                                                 </div>
                                                 <div class="row">
                                                     <div class="col-md-4 mb-3">
-                                                        <label class="form-label">Tour Start & End Date<span
+                                                        <label class="form-label">Tour Start Date<span
                                                                 class="text-danger">*</span></label>
-                                                        <input type="date" name="start_date" class="form-control"
+                                                        <input type="date" name="start_date" id="tourStartDate" class="form-control"
                                                             placeholder="Please Select Tour Date" required
-                                                            min="{{ date('Y-m-d') }}">
+                                                            min="{{ date('Y-m-d') }}"
+                                                            onchange="updateEndDateMin(); checkFormFields();">
                                                     </div>
 
                                                     <div class="col-md-4 mb-3">
-                                                        <label class="form-label">Tour Start & End Date<span
+                                                        <label class="form-label">Tour End Date<span
                                                                 class="text-danger">*</span></label>
-                                                        <input type="date" name="end_date" class="form-control"
+                                                        <input type="date" name="end_date" id="tourEndDate" class="form-control"
                                                             placeholder="Please Select Tour Date" required
-                                                            min="{{ date('Y-m-d') }}">
+                                                            min="{{ date('Y-m-d') }}"
+                                                            onchange="checkFormFields();">
                                                     </div>
 
                                                     <div class="col-md-4 mb-3">
                                                         <label class="form-label">No. of Tourists ( Max 6)<span
                                                                 class="text-danger">*</span></label>
-                                                        <input type="number" class="form-control"
+                                                        <input type="number" class="form-control" id="touristCount"
                                                             name="number_of_tourist" placeholder="No. of Tourists"
-                                                            min="1" max="6">
+                                                            min="1" max="6" onchange="checkFormFields();">
+                                                    </div>
+                                                </div>
+                                                <div class="row mb-3">
+                                                    <div class="col-12">
+                                                        <button type="button" class="btn btn-primary" id="checkAvailability" style="display: none;">
+                                                            <i class="fas fa-calendar-check"></i> Check Availability
+                                                        </button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -107,6 +116,14 @@
                                                             <option value="">Select</option>
                                                         </select>
                                                     </div>
+                                                    <div class="col-md-6 mb-3 vehicle-details" style="display: none;">
+                                                        <label class="form-label">Driver's Name<span class="text-danger vehicle-required" style="display: none;">*</span></label>
+                                                        <input type="text" class="form-control" name="driver_name" id="driverName" placeholder="Enter Driver's Name">
+                                                    </div>
+                                                    <div class="col-md-6 mb-3 vehicle-details" style="display: none;">
+                                                        <label class="form-label">Vehicle Number<span class="text-danger vehicle-required" style="display: none;">*</span></label>
+                                                        <input type="text" class="form-control" name="vehicle_number" id="vehicleNumber" placeholder="Enter Vehicle Number">
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -136,7 +153,7 @@
                                                             </select>
                                                         </div>
                                                         <div class="col-md-5">
-                                                            <input type="date" class="form-control"
+                                                            <input type="date" class="form-control dham-date"
                                                                 name="dhamDate[]">
                                                         </div>
                                                         <div class="col-md-2 d-flex">
@@ -170,6 +187,30 @@
         </div>
     </div>
 
+    <!-- Availability Modal -->
+    <div class="modal fade" id="availabilityModal" tabindex="-1" aria-labelledby="availabilityModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header bg-light">
+                    <h5 class="modal-title" id="availabilityModalLabel">Available Slots</h5>
+                    <div class="d-flex align-items-center">
+                        <!-- <h4 class="mb-0 me-3">May 2025</h4> -->
+                        <!-- <div>
+                            <button class="btn btn-sm btn-outline-secondary me-2" id="prevMonth"><i class="fas fa-chevron-left"></i></button>
+                            <button class="btn btn-sm btn-outline-secondary" id="nextMonth"><i class="fas fa-chevron-right"></i></button>
+                        </div> -->
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="availabilityGrid" class="row g-3">
+                        <!-- Calendar boxes will be added here dynamically -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         const tourForm = document.getElementById('tourRegistrationForm');
         if (tourForm) {
@@ -179,16 +220,21 @@
             // Mode of Travel dependency
             const travelModeSelect = document.getElementById('travelMode');
             const transportationSelect = document.getElementById('transportationType');
-
-            // Initialize transportation select as disabled
-            // if (transportationSelect) {
-            //     transportationSelect.disabled = true;
-            // } 
+            const vehicleDetails = document.querySelectorAll('.vehicle-details');
+            const vehicleRequired = document.querySelectorAll('.vehicle-required');
+            const driverName = document.getElementById('driverName');
+            const vehicleNumber = document.getElementById('vehicleNumber');
 
             travelModeSelect.addEventListener('change', function() {
                 // First clear and enable the transportation select
                 transportationSelect.innerHTML = '<option value="">Select</option>';
                 transportationSelect.disabled = false;
+
+                // Hide vehicle details by default
+                vehicleDetails.forEach(detail => detail.style.display = 'none');
+                vehicleRequired.forEach(req => req.style.display = 'none');
+                driverName.required = false;
+                vehicleNumber.required = false;
 
                 // Add options based on selected travel mode
                 switch (this.value) {
@@ -203,6 +249,7 @@
                             const optionElement = new Option(option, option);
                             transportationSelect.add(optionElement);
                         });
+                        vehicleDetails.forEach(detail => detail.style.display = 'block');
                         break;
 
                     case 'By Helicopter':
@@ -212,7 +259,6 @@
                     case 'By Walking':
                         transportationSelect.add(new Option('By Walking', 'By Walking'));
                         transportationSelect.value = 'By Walking';
-                        //transportationSelect.disabled = true;
                         break;
 
                     default:
@@ -220,6 +266,15 @@
                 }
             });
 
+            // Add event listener for transportation type
+            transportationSelect.addEventListener('change', function() {
+                const requireFields = ['Private Car', 'Two-wheeler'].includes(this.value);
+                driverName.required = requireFields;
+                vehicleNumber.required = requireFields;
+                vehicleRequired.forEach(req => {
+                    req.style.display = requireFields ? 'inline' : 'none';
+                });
+            });
 
             // Add/Remove destination functionality
             const destinationContainer = document.getElementById('destinationContainer');
@@ -240,7 +295,7 @@
                 </select>
             </div>
             <div class="col-md-5">
-                <input type="date" class="form-control" name="dhamDate[]" required>
+                <input type="date" class="form-control dham-date" name="dhamDate[]" required>
             </div>
             <div class="col-md-2 d-flex">
                 <button type="button" class="btn btn-danger remove-destination">
@@ -249,12 +304,41 @@
             </div>
         `;
                 destinationContainer.appendChild(newRow);
+                
+                // Set min/max dates for the new dham date input
+                const dhamDateInput = newRow.querySelector('.dham-date');
+                const tourStartDate = document.getElementById('tourStartDate').value;
+                const tourEndDate = document.getElementById('tourEndDate').value;
+                if (tourStartDate) dhamDateInput.min = tourStartDate;
+                if (tourEndDate) dhamDateInput.max = tourEndDate;
 
                 const removeBtn = newRow.querySelector('.remove-destination');
                 removeBtn.addEventListener('click', function() {
                     newRow.remove();
                 });
             });
+
+            // Function to update all dham date constraints
+            function updateDhamDateConstraints() {
+                const startDate = document.getElementById('tourStartDate').value;
+                const endDate = document.getElementById('tourEndDate').value;
+                document.querySelectorAll('.dham-date').forEach(input => {
+                    if (startDate) input.min = startDate;
+                    if (endDate) input.max = endDate;
+                    // If current value is outside new constraints, clear it
+                    if ((startDate && input.value < startDate) || (endDate && input.value > endDate)) {
+                        input.value = '';
+                    }
+                });
+            }
+
+            // Add event listeners for tour date changes
+            document.getElementById('tourStartDate').addEventListener('change', function() {
+                updateEndDateMin();
+                updateDhamDateConstraints();
+            });
+
+            document.getElementById('tourEndDate').addEventListener('change', updateDhamDateConstraints);
 
             // Add remove functionality to initial destination row
             document.querySelectorAll('.remove-destination').forEach(btn => {
@@ -265,21 +349,23 @@
                 });
             });
 
+            // Update initial destination row class
+            document.querySelector('input[name="dhamDate[]"]').classList.add('dham-date');
+
             // Form validation
             tourForm.addEventListener('submit', function(e) {
                 e.preventDefault();
 
                 // Basic validation
-                //const dateRange = tourForm.querySelector('.daterange').value;
                 const tourists = tourForm.querySelector('input[type="number"]').value;
                 const travelMode = travelModeSelect.value;
                 const transportation = transportationSelect.value;
+                const driverName = document.getElementById('driverName').value;
+                const vehicleNumber = document.getElementById('vehicleNumber').value;
                 const destinations = tourForm.querySelectorAll('.destination-row');
 
                 let isValid = true;
                 let errorMessage = '';
-
-
 
                 if (!tourists || tourists < 1 || tourists > 6) {
                     errorMessage += 'Number of tourists must be between 1 and 6\n';
@@ -293,6 +379,11 @@
 
                 if (!transportation && travelMode !== 'By Walking') {
                     errorMessage += 'Please select type of transportation\n';
+                    isValid = false;
+                }
+
+                if (travelMode === 'By Road' && (!driverName || !vehicleNumber)) {
+                    errorMessage += 'Please provide driver\'s name and vehicle number\n';
                     isValid = false;
                 }
 
@@ -322,8 +413,151 @@
 
                 this.submit();
             });
+
+            // Update minimum end date based on start date
+            function updateEndDateMin() {
+                const startDate = document.getElementById('tourStartDate').value;
+                const endDateInput = document.getElementById('tourEndDate');
+                if (startDate) {
+                    endDateInput.min = startDate;
+                    // If current end date is before new min date, clear it
+                    if (endDateInput.value && endDateInput.value < startDate) {
+                        endDateInput.value = '';
+                    }
+                }
+            }
+
+            // Initialize date constraints on page load
+            updateEndDateMin();
+            updateDhamDateConstraints();
+
+            // Check form fields to toggle availability button visibility
+            function checkFormFields() {
+                const startDate = document.getElementById('tourStartDate').value;
+                const endDate = document.getElementById('tourEndDate').value;
+                const touristCount = document.getElementById('touristCount').value;
+                const checkAvailabilityButton = document.getElementById('checkAvailability');
+
+                if (startDate && endDate && touristCount) {
+                    checkAvailabilityButton.style.display = 'inline-block';
+                } else {
+                    checkAvailabilityButton.style.display = 'none';
+                }
+            }
         }
+
+        // Availability Calendar functionality
+        document.getElementById('checkAvailability').addEventListener('click', function() {
+            const availabilityGrid = document.getElementById('availabilityGrid');
+            availabilityGrid.innerHTML = ''; // Clear existing content
+            
+            // Get current date
+            const today = new Date();
+            
+            // Generate next 15 days availability boxes
+            for (let i = 0; i < 15; i++) {
+                const date = new Date(today);
+                date.setDate(date.getDate() + i);
+                
+                const box = document.createElement('div');
+                box.className = 'col-lg-3 mb-3';
+                
+                // Format date as DD-MM-YYYY
+                const formattedDate = date.toLocaleDateString('en-GB', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric'
+                });
+                
+                box.innerHTML = `
+                    <div class="date-card">
+                        <div class="date-header">
+                            Date: ${formattedDate}
+                        </div>
+                        <div class="date-body">
+                            <div class="d-flex flex-wrap align-items-center mb-2">
+                                <div class="slot-item">
+                                    <div class="dham-name">Yamunotri</div>
+                                </div>
+                                <div class="slot-item">
+                                    <div class="dham-name">Gangotri</div>
+                                </div>
+                                <div class="slot-item">
+                                    <div class="dham-name">Kedarnath</div>
+                                </div>
+                                <div class="slot-item">
+                                    <div class="dham-name">Badrinath</div>
+                                </div>
+                                <div class="slot-item">
+                                    <div class="dham-name">Hemkund Sahib</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                availabilityGrid.appendChild(box);
+            }
+            
+            // Show the modal
+            const modal = new bootstrap.Modal(document.getElementById('availabilityModal'));
+            modal.show();
+        });
     </script>
+
+    <style>
+        .slot-grid {
+            display: grid;
+            gap: 0.5rem;
+        }
+        
+        .slot-item {
+            display: grid;
+            grid-template-columns: repeat(1, 1fr);
+            gap: 0.25rem;
+            padding: 0.25rem;
+            font-size: 0.9rem;
+        }
+        
+        .slot-item > * {
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            text-align: center;
+        }
+        
+        .slot-item .dham-name {
+            background-color: #9ed7ab;
+            color: #fff;
+            font-weight: 500;
+        }
+        
+        #availabilityModal .modal-dialog {
+            max-width: 90%;
+        }
+        
+        .badge {
+            font-weight: normal;
+            font-size: 0.9rem;
+        }
+
+        .date-card {
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .date-header {
+            background-color: #f8f9fa;
+            padding: 0.5rem;
+            border-bottom: 1px solid #dee2e6;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        .date-body {
+            padding: 0.5rem;
+        }
+    </style>
 
     @include('partials.user_footer')
 </body>
