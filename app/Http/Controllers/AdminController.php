@@ -38,16 +38,27 @@ class AdminController extends Controller
             'qr_image' => 'required|image|mimes:png,jpg,jpeg|max:2048',
         ]);
 
-        $fileName = time() . '_' . $request->file('qr_image')->getClientOriginalName();
-        $path = $request->file('qr_image')->storeAs('public/qrs', $fileName);
+        $file = $request->file('qr_image');
+        $fileName = time() . '_' . $file->getClientOriginalName();
+        $destinationPath = public_path('qr');
 
+        // Create folder if not exists
+        if (!file_exists($destinationPath)) {
+            mkdir($destinationPath, 0755, true);
+        }
+
+        // Move file to public/qr
+        $file->move($destinationPath, $fileName);
+
+        // Save to DB
         Qr::updateOrCreate(['id' => 1], [
             'name' => $request->name,
-            'qr_image' => 'qrs/' . $fileName,
+            'qr_image' => 'qr/' . $fileName, // saved relative to public/
         ]);
 
         return back()->with('success', 'QR uploaded successfully.');
     }
+
 
     public function paymentStatus(Request $request)
     {
