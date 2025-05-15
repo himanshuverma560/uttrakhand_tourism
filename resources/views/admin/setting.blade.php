@@ -45,7 +45,7 @@
                                 <tr>
                                     <td>{{ $qr->name }}</td>
                                     <td>
-                                        <img src="{{ asset($qr->qr_image) }}" alt="{{ $qr->name }}">
+                                        <img src="{{ asset($qr->qr_image) }}" alt="{{ $qr->name }}" width="80">
                                     </td>
                                 </tr>
                             @empty
