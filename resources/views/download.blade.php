@@ -77,7 +77,7 @@
                                                     <td>
                                                         @if ($value->status == 1)
                                                         <button class="btn btn-danger download-pdf"
-                                                        data-regno="{{Auth::user()->unique_id}}"
+                                                        data-regno="{{$value->aadhar_card}}"
                                                         data-group-id="{{$value->tour->tour_id}}"
                                                         data-destination="{{$destination}}"
                                                         data-tour-days="5"
