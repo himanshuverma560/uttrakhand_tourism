@@ -30,7 +30,8 @@ class Pilgrim extends Model
         'doctor',
         'vehicle_details',
         'mobile',
-        'email'
+        'email',
+        'status'
     ];
 
     public function tour()

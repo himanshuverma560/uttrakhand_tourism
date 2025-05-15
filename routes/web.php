@@ -43,7 +43,13 @@ Route::prefix('user')->middleware(['auth'])->group(function () {
 
 });
 
-Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
+Route::get('admin/login', [AdminAuthController::class, 'adminLogin'])->name('admin.login');
+Route::post('admin/login', [AdminAuthController::class, 'login'])->name('admin.login.submit');
+Route::prefix('admin')->middleware(['admin'])->group(function () {
     Route::get('dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+    Route::get('settings', [AdminController::class, 'settings'])->name('admin.settings');
+    Route::post('/qr-upload', [AdminController::class, 'storeQr'])->name('qr.store');
+    Route::post('payments/status', [AdminController::class, 'paymentStatus'])->name('admin.payments.status');
+    Route::post('/pilgrim/verify/{id}', [AdminController::class, 'verifyPilgrim'])->name('admin.pilgrim.verify');
     Route::get('logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
 });

@@ -28,7 +28,6 @@ class Tour extends Model
         'date_wise_destination',
         'driver_name',
         'vehicle_number',
-        'status',
         'tour_id'
     ];
 

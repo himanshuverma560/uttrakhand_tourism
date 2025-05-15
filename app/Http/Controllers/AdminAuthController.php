@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use App\Models\Admin;
 
 class AdminAuthController extends Controller
 {
@@ -20,7 +21,7 @@ class AdminAuthController extends Controller
         $credentials = $request->only('email', 'password');
 
         // Attempt to log in
-        if (Auth::attempt($credentials)) {
+        if (Auth::guard('admin')->attempt($credentials)) {
             // Authentication successful, redirect to intended page
             return redirect()->intended('admin/dashboard');
         }
@@ -36,5 +37,9 @@ class AdminAuthController extends Controller
 
         // Redirect to login page or any other page after logout
         return redirect('/');
+    }
+
+    public function adminLogin(Request $request) {
+        return view('admin.login');
     }
 }

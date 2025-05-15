@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Validator;
 use App\Models\User;
 use App\Models\Tour;
 use App\Models\Pilgrim;
+use Illuminate\Support\Facades\Storage;
 
 class WebsiteController extends Controller
 {
@@ -165,7 +166,7 @@ class WebsiteController extends Controller
     {
         $tour = Tour::findOrFail($id);
         // similar logic as store with date parsing and JSON encoding
-        
+
         $startDate = $request->start_date;
         $endDate = $request->end_date;
 
@@ -232,5 +233,7 @@ class WebsiteController extends Controller
         return redirect()->route('download')->with('success', 'Pilgrim updated successfully!');
 
     }
+
+    
 
 }
