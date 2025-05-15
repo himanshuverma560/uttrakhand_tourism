@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Qr;
+use App\Models\Setting;
 use Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -112,7 +114,10 @@ class WebsiteController extends Controller
         $data = Pilgrim::with('tour')
             ->where('user_id', Auth::user()->id)
             ->get();
-        return view('download', compact('data'));
+        
+        $qr = Qr::first();
+        $payment = Setting::where('id', 1)->first();
+        return view('download', compact('data', 'qr', 'payment'));
     }
 
     public function storeTour(Request $request)

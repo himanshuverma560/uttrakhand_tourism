@@ -74,7 +74,9 @@
                                                             </a>
                                                         </div>
                                                     </td>   
-                                                    <td><button class="btn btn-danger download-pdf"
+                                                    <td>
+                                                        @if ($value->status == 1)
+                                                        <button class="btn btn-danger download-pdf"
                                                         data-regno="{{Auth::user()->unique_id}}"
                                                         data-group-id="{{$value->tour->tour_id}}"
                                                         data-destination="{{$destination}}"
@@ -99,11 +101,17 @@
                                                         data-contact-relation="{{$value->contact_relation}}",
                                                         data-vehicle-details="{{$value->vehicle_details}}",
                                                         data-drivers-name="{{$value->drivers_name}}",
-                                                        data-vehicle-number="{{$value->vehicle_number}}"
-                                                        
+                                                        data-vehicle-number="{{$value->vehicle_number}}">
+                                                        Download PDF</button>
+                                                        @endif
 
-                                                    >Download PDF</button>
+                                                        @if ($value->status == 0 && $payment->status == 1)
+                                                            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#qrModal{{ $qr->id }}">
+                                                                Payment
+                                                            </button>
+                                                        @endif
                                                     </td>
+
                                                     <td></td>
                                                 </tr>
                                                 @endforeach
@@ -121,6 +129,20 @@
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="qrModal{{ $qr->id }}" tabindex="-1" aria-labelledby="qrModalLabel{{ $qr->id }}" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content text-center">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="qrModalLabel{{ $qr->id }}">{{ $qr->name }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <img src="{{ asset($qr->qr_image) }}" alt="{{ $qr->name }}" class="img-fluid" style="max-width: 250px;">
                 </div>
             </div>
         </div>
