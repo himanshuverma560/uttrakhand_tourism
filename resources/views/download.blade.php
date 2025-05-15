@@ -77,11 +77,14 @@
                                                     <td>
                                                         @if ($value->status == 1)
                                                         <button class="btn btn-danger download-pdf"
-                                                        data-regno="{{$value->aadhar_card}}"
+                                                        data-regno="{{Auth::user()->unique_id}}"
                                                         data-group-id="{{$value->tour->tour_id}}"
                                                         data-destination="{{$destination}}"
                                                         data-tour-days="5"
-                                                        data-selected-dates="{{$value->tour->start_date_formatted .' To '. $value->tour->end_date_formatted}}"
+                                                        data-selected-dates="<?php $date_wise_destination = json_decode($value->tour->date_wise_destination, true);
+                                                        foreach ($date_wise_destination as $destination) {
+                                                            echo $destination['dham'] . '-' . $destination['date'] .",";
+                                                        } ?>"
                                                         data-full-name="{{$value->name}}"
                                                         data-gender="{{$value->gender}}"
                                                         data-age="{{$value->age}}"
@@ -100,8 +103,8 @@
                                                         data-contact-person="{{$value->contact_person}}",
                                                         data-contact-relation="{{$value->contact_relation}}",
                                                         data-vehicle-details="{{$value->vehicle_details}}",
-                                                        data-drivers-name="{{$value->drivers_name}}",
-                                                        data-vehicle-number="{{$value->vehicle_number}}">
+                                                        data-drivers-name="{{$value->tour->drivers_name}}",
+                                                        data-vehicle-number="{{$value->tour->vehicle_number}}">
                                                         Download PDF</button>
                                                         @endif
 
