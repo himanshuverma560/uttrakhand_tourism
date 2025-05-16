@@ -26,7 +26,7 @@
     <nav class="navbar navbar-expand-lg">
         <div class="container">
             <a class="navbar-brand" href="index.html">
-                <img src="images/logo.jpg" alt="Uttarakhand Tourism Simply Heaven" height="50">
+                <img src="images/logo.png" alt="Uttarakhand Tourism Simply Heaven" height="50">
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -38,8 +38,8 @@
                         <a class="nav-link active" href="/">HOME</a>
                     </li>
                     @guest
-                        <li class="nav-item">
-                            <a class="nav-link" href="/registration">CHARDHAM REGISTRATION</a>
+                        <li class="nav-item" style="background-color: #6ba535;">
+                            <a class="nav-link" href="/registration" style="color: #fff;">CHARDHAM REGISTRATION</a>
                         </li>
                     @endguest
 

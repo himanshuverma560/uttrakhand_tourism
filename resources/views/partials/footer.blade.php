@@ -49,9 +49,9 @@
                     <a href="#" class="text-decoration-none me-3">Website Policy</a>
                     <a href="#" class="text-decoration-none">Accessibility Statement</a>
                 </div>
-                <div class="col-md-4 text-end">
+                <!-- <div class="col-md-4 text-end">
                     <p>Designed and Developed by <a href="#" class="text-decoration-none text-success">TechNova Creations</a></p>
-                </div>
+                </div> -->
             </div>
         </div>
     </div>

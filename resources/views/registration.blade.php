@@ -1,12 +1,16 @@
+@include('partials.user_head')
 @extends('layouts.website_layout')
 @section('content')
     <!-- Top social bar -->
-    @extends('partials.menu')
-    <section class="auth-section py-5">
+    @include('partials.user_nav')
+    @push('scripts')
+    <script src="{{ asset('js/pilgrim-switch.js') }}"></script>
+    @endpush
+    <section class="auth-section">
         <div class="container">
             <div class="row">
                 <!-- Registration Form -->
-                <div class="col-md-6">
+                <div class="col-md-5">
                     <div class="card">
                         <div class="card-body">
                             @if (session('success'))
@@ -24,19 +28,20 @@
                                     </ul>
                                 </div>
                             @endif
-                            <h3 class="card-title mb-4">Register for Chardham and Hemkund</h3>
+                            <h3 class="card-title mb-3">Register for Chardham and Hemkund</h3>
 
                             <!-- Pilgrim Type Selection -->
+                            <link href="{{ asset('css/pilgrim-switch.css') }}" rel="stylesheet">
                             <div class="pilgrim-type-buttons mb-4">
-                                <button type="button" class="btn btn-primary pilgrim-type active" data-type="indian">Indian
+                                <button type="button" class="pilgrim-type" data-type="indian">Indian
                                     Pilgrim</button>
-                                <button type="button" class="btn btn-secondary pilgrim-type" data-type="foreign">Foreign
+                                <button type="button" class="pilgrim-type" data-type="foreign">Foreign
                                     Pilgrim</button>
                             </div>
 
                             <form id="registrationForm" method="post" action="{{ route('registration.store') }}">
                                 @csrf
-                                <div class="mb-3">
+                                <div class="mb-3 ">
                                     <label class="form-label">Name <span class="text-danger">*</span></label>
                                     <input type="text" class="form-control" name="name" placeholder="Enter Name"
                                         required>
@@ -84,11 +89,6 @@
                                         <input type="tel"  name="mobile" class="form-control" placeholder="Enter Mobile No." required>
                                     </div>
                                 </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Email ID <span class="text-danger">*</span></label>
-                                    <input type="email" name="email" class="form-control" placeholder="Enter Email ID"
-                                        required>
-                                </div>
                                 <div class="mb-3 pilgrim-type-radios">
                                     <div class="form-check form-check-inline">
                                         <input class="form-check-input" type="radio" name="pilgrim_type"
@@ -100,6 +100,11 @@
                                             id="family" value="Family">
                                         <label class="form-check-label" for="family">Family</label>
                                     </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Email ID <span class="text-danger">*</span></label>
+                                    <input type="email" name="email" class="form-control" placeholder="Enter Email ID"
+                                        required>
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Password <span class="text-danger">*</span></label>
@@ -125,14 +130,14 @@
                                     Password must be minimum of 6 characters. It must contain alphabets, special characters
                                     and numbers !!
                                 </div>
-                                <button type="submit" class="btn btn-primary">SIGN UP</button>
+                                <button type="submit" class="btn btn-primary submit-btn">SIGN UP</button>
                             </form>
                         </div>
                     </div>
                 </div>
 
                 <!-- Login Form -->
-                <div class="col-md-6">
+                <div class="col-md-5">
                     <div class="card">
                         <div class="card-body">
                             @if (session('error'))
@@ -140,14 +145,14 @@
                                 {{ session('error') }}
                             </div>
                         @endif
-                            <h3 class="card-title mb-4">Login to Your Account!</h3>
-                            <p class="text-muted mb-4">If you are already a registered user, then please login here.</p>
+                            <h3 class="card-title mb-2">Login to Your Account!</h3>
+                            <p class="text-muted mb-3 card-sub-title">If you are already a registered user, then please login here.</p>
                             
                             <!-- Pilgrim Type Selection -->
                             <div class="pilgrim-type-buttons mb-4">
-                                <button type="button" class="btn btn-primary pilgrim-type active"
-                                    data-type="indian">Indian Pilgrim</button>
-                                <button type="button" class="btn btn-secondary pilgrim-type" data-type="foreign">Foreign
+                                <button type="button" class="pilgrim-type" data-type="indian">Indian
+                                    Pilgrim</button>
+                                <button type="button" class="pilgrim-type" data-type="foreign">Foreign
                                     Pilgrim</button>
                             </div>
 
@@ -188,7 +193,7 @@
                                     </div>
                                 </div>
                                 <div class="d-flex justify-content-between align-items-center">
-                                    <button type="submit" class="btn btn-primary">SIGN IN</button>
+                                    <button type="submit" class="btn btn-primary  submit-btn">SIGN IN</button>
                                     {{-- <a href="#" class="text-primary" id="forgotPasswordLink">Forgot Password?</a> --}}
                                 </div>
                             </form>

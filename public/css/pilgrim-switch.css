@@ -1,0 +1,57 @@
+.pilgrim-type-buttons {
+    background: #0791BE;
+    border-radius: 25px;
+    padding: 2px;
+    display: inline-flex;
+    position: relative;
+    width: fit-content;
+    gap: 3px;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+    margin-left: 50%;
+    transform: translateX(-50%);
+    transition: all 0.3s ease;
+}
+
+.pilgrim-type {
+    border: none !important;
+    padding: 8px 8px !important;
+    border-radius: 25px !important;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    position: relative;
+    margin: 0 !important;
+    min-width: 140px;
+    text-align: center;
+    cursor: pointer;
+    /* box-shadow: 0 1px 2px rgba(0,0,0,0.1); */
+}
+
+.pilgrim-type:focus {
+    outline: none !important;
+    /* box-shadow: 0 0 0 2px rgba(0,0,0,0.1); */
+}
+
+.pilgrim-type:active {
+    transform: scale(0.98);
+}
+
+.pilgrim-type[data-type="indian"] {
+    background-color: #E15B4E !important;
+    color: white !important;
+}
+
+.pilgrim-type[data-type="indian"]:not(.active) {
+    background-color: transparent !important;
+    color: #fff !important;
+}
+
+.pilgrim-type[data-type="foreign"] {
+    background-color: #E15B4E !important;
+    color: white !important;
+}
+
+.pilgrim-type[data-type="foreign"]:not(.active) {
+    background-color: transparent !important;
+    color: #fff !important;
+}

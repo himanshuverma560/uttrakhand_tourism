@@ -15,9 +15,9 @@
                 <!-- Main Dashboard Area -->
                 <div class="col-md-9">
                     @if (session('success'))
-                        <div class="alert alert-success">
-                            {{ session('success') }}
-                        </div>
+                    <div class="alert alert-success">
+                        {{ session('success') }}
+                    </div>
                     @endif
                     <div class="row g-4">
                         <!-- Registration for Tour -->
@@ -97,7 +97,7 @@
                                                     Boarding Vehicle, you can not change it later.
                                                 </div>
                                                 <div class="row">
-                                                    <div class="col-md-6 mb-3">
+                                                    <div class="col-md-5 mb-3">
                                                         <label class="form-label">Mode of Travel for Dham<span
                                                                 class="text-danger">*</span></label>
                                                         <select class="form-select" id="travelMode"
@@ -108,7 +108,7 @@
                                                             <option value="By Walking">By Walking</option>
                                                         </select>
                                                     </div>
-                                                    <div class="col-md-6 mb-3">
+                                                    <div class="col-md-5 mb-3">
                                                         <label class="form-label">Type of Transportation<span
                                                                 class="text-danger">*</span></label>
                                                         <select class="form-select" id="transportationType"
@@ -116,14 +116,37 @@
                                                             <option value="">Select</option>
                                                         </select>
                                                     </div>
-                                                    <div class="col-md-6 mb-3 vehicle-details" style="display: none;">
+                                                </div>
+
+                                                <div class="row d-flex align-items-end">
+                                                    <div class="col-md-5 mb-3 vehicle-details" style="display: none;">
                                                         <label class="form-label">Driver's Name<span class="text-danger vehicle-required" style="display: none;">*</span></label>
-                                                        <input type="text" class="form-control" name="driver_name" id="driverName" placeholder="Enter Driver's Name">
+                                                        <input type="text" class="form-control" id="driverName" placeholder="Enter Driver's Name">
                                                     </div>
-                                                    <div class="col-md-6 mb-3 vehicle-details" style="display: none;">
+                                                    <div class="col-md-5 mb-3 vehicle-details" style="display: none;">
                                                         <label class="form-label">Vehicle Number<span class="text-danger vehicle-required" style="display: none;">*</span></label>
-                                                        <input type="text" class="form-control" name="vehicle_number" id="vehicleNumber" placeholder="Enter Vehicle Number">
+                                                        <input type="text" class="form-control" id="vehicleNumber" placeholder="Enter Vehicle Number">
                                                     </div>
+                                                    <div class="text-end vehicle-details col-md-2 mb-3" style="display: none;">
+                                                        <button type="button" class="btn btn-primary" id="addVehicle">
+                                                            <i class="fas fa-plus"></i> Add
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                                <!-- Vehicle Details Table -->
+                                                <div class="table-responsive mt-3" style="display: none;">
+                                                    <table class="table table-bordered" id="vehicleTable">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Mode of Travel for Dham</th>
+                                                                <th>Type of Transportation</th>
+                                                                <th>Driver's Name</th>
+                                                                <th>Vehicle Number</th>
+                                                                <th>Action</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody></tbody>
+                                                    </table>
                                                 </div>
                                             </div>
                                         </div>
@@ -193,16 +216,16 @@
             <div class="modal-content">
                 <div class="modal-header bg-light">
                     <h5 class="modal-title" id="availabilityModalLabel">Available Slots</h5>
-                    <div class="d-flex align-items-center">
-                        <!-- <h4 class="mb-0 me-3">May 2025</h4> -->
-                        <!-- <div>
-                            <button class="btn btn-sm btn-outline-secondary me-2" id="prevMonth"><i class="fas fa-chevron-left"></i></button>
-                            <button class="btn btn-sm btn-outline-secondary" id="nextMonth"><i class="fas fa-chevron-right"></i></button>
-                        </div> -->
-                    </div>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <h4 class="mb-0 me-3" id="currentMonthDisplay"></h4>
+                        <div>
+                            <button class="btn btn-sm btn-outline-secondary me-2" id="prevMonth"><i class="fas fa-chevron-left"></i></button>
+                            <button class="btn btn-sm btn-outline-secondary" id="nextMonth"><i class="fas fa-chevron-right"></i></button>
+                        </div>
+                    </div>
                     <div id="availabilityGrid" class="row g-3">
                         <!-- Calendar boxes will be added here dynamically -->
                     </div>
@@ -224,6 +247,11 @@
             const vehicleRequired = document.querySelectorAll('.vehicle-required');
             const driverName = document.getElementById('driverName');
             const vehicleNumber = document.getElementById('vehicleNumber');
+
+            // Initialize vehicles array to store all vehicles
+            let vehicles = [];
+            const vehicleTable = document.getElementById('vehicleTable');
+            const addVehicleBtn = document.getElementById('addVehicle');
 
             travelModeSelect.addEventListener('change', function() {
                 // First clear and enable the transportation select
@@ -254,26 +282,104 @@
 
                     case 'By Helicopter':
                         transportationSelect.add(new Option('Chartered Helicopter', 'Chartered Helicopter'));
+                        vehicleDetails.forEach(detail => detail.style.display = 'none');
                         break;
 
                     case 'By Walking':
                         transportationSelect.add(new Option('By Walking', 'By Walking'));
                         transportationSelect.value = 'By Walking';
+                        vehicleDetails.forEach(detail => detail.style.display = 'none');
                         break;
 
                     default:
                         transportationSelect.disabled = true;
+                        vehicleDetails.forEach(detail => detail.style.display = 'none');
                 }
             });
+
+            // Function to update vehicles table
+            function updateVehiclesTable() {
+                const tbody = vehicleTable.querySelector('tbody');
+                const vehicleTableContainer = vehicleTable.closest('.table-responsive');
+                vehicleTableContainer.style.display = vehicles.length > 0 ? 'block' : 'none';
+                tbody.innerHTML = '';
+                vehicles.forEach((vehicle, index) => {
+                    const row = tbody.insertRow();
+                    row.innerHTML = `
+                        <td>${vehicle.mode}</td>
+                        <td>${vehicle.type}</td>
+                        <td>${vehicle.driverName}</td>
+                        <td>${vehicle.vehicleNumber}</td>
+                        <td>
+                            <button type="button" class="btn btn-sm btn-outline-primary edit-vehicle" data-index="${index}">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-danger delete-vehicle" data-index="${index}">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    `;
+                });
+
+                // Add event listeners for edit and delete buttons
+                tbody.querySelectorAll('.edit-vehicle').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const index = this.dataset.index;
+                        const vehicle = vehicles[index];
+                        travelModeSelect.value = vehicle.mode;
+                        travelModeSelect.dispatchEvent(new Event('change'));
+                        transportationSelect.value = vehicle.type;
+                        driverName.value = vehicle.driverName;
+                        vehicleNumber.value = vehicle.vehicleNumber;
+                        vehicles.splice(index, 1);
+                        updateVehiclesTable();
+                    });
+                });
+
+                tbody.querySelectorAll('.delete-vehicle').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const index = this.dataset.index;
+                        vehicles.splice(index, 1);
+                        updateVehiclesTable();
+                    });
+                });
+            }
 
             // Add event listener for transportation type
             transportationSelect.addEventListener('change', function() {
                 const requireFields = ['Private Car', 'Two-wheeler'].includes(this.value);
-                driverName.required = requireFields;
-                vehicleNumber.required = requireFields;
                 vehicleRequired.forEach(req => {
                     req.style.display = requireFields ? 'inline' : 'none';
                 });
+            });
+
+            // Add event listener for Add Vehicle button
+            addVehicleBtn.addEventListener('click', function() {
+                const mode = travelModeSelect.value;
+                const type = transportationSelect.value;
+                const driver = driverName.value;
+                const vehNumber = vehicleNumber.value;
+
+                // Validate inputs
+                if (!mode || !type || (type !== 'By Walking' && (!driver || !vehNumber))) {
+                    alert('Please fill all required fields');
+                    return;
+                }
+
+                // Add vehicle to array
+                vehicles.push({
+                    mode: mode,
+                    type: type,
+                    driverName: driver,
+                    vehicleNumber: vehNumber
+                });
+
+                // Update table
+                updateVehiclesTable();
+
+                // Clear inputs
+                driverName.value = '';
+                vehicleNumber.value = '';
             });
 
             // Add/Remove destination functionality
@@ -304,7 +410,7 @@
             </div>
         `;
                 destinationContainer.appendChild(newRow);
-                
+
                 // Set min/max dates for the new dham date input
                 const dhamDateInput = newRow.querySelector('.dham-date');
                 const tourStartDate = document.getElementById('tourStartDate').value;
@@ -360,8 +466,6 @@
                 const tourists = tourForm.querySelector('input[type="number"]').value;
                 const travelMode = travelModeSelect.value;
                 const transportation = transportationSelect.value;
-                const driverName = document.getElementById('driverName').value;
-                const vehicleNumber = document.getElementById('vehicleNumber').value;
                 const destinations = tourForm.querySelectorAll('.destination-row');
 
                 let isValid = true;
@@ -382,9 +486,18 @@
                     isValid = false;
                 }
 
-                if (travelMode === 'By Road' && (!driverName || !vehicleNumber)) {
-                    errorMessage += 'Please provide driver\'s name and vehicle number\n';
+                if (travelMode === 'By Road' && vehicles.length === 0) {
+                    errorMessage += 'Please add at least one vehicle\n';
                     isValid = false;
+                }
+
+                // Add vehicles data to form before submit
+                if (vehicles.length > 0) {
+                    const vehiclesInput = document.createElement('input');
+                    vehiclesInput.type = 'hidden';
+                    vehiclesInput.name = 'vehicles';
+                    vehiclesInput.value = JSON.stringify(vehicles);
+                    this.appendChild(vehiclesInput);
                 }
 
                 if (destinations.length < 1) {
@@ -437,45 +550,33 @@
                 const endDate = document.getElementById('tourEndDate').value;
                 const touristCount = document.getElementById('touristCount').value;
                 const checkAvailabilityButton = document.getElementById('checkAvailability');
-
-                if (startDate && endDate && touristCount) {
-                    checkAvailabilityButton.style.display = 'inline-block';
-                } else {
-                    checkAvailabilityButton.style.display = 'none';
-                }
+                checkAvailabilityButton.style.display = 'block';
+                // if (startDate && endDate && touristCount) {
+                //     checkAvailabilityButton.style.display = 'inline-block';
+                // } else {
+                //     checkAvailabilityButton.style.display = 'none';
+                // }
             }
         }
 
         // Availability Calendar functionality
-        document.getElementById('checkAvailability').addEventListener('click', function() {
-            const availabilityGrid = document.getElementById('availabilityGrid');
-            availabilityGrid.innerHTML = ''; // Clear existing content
-            
-            // Get current date
-            const today = new Date();
-            
-            // Generate next 15 days availability boxes
-            for (let i = 0; i < 15; i++) {
-                const date = new Date(today);
-                date.setDate(date.getDate() + i);
-                
-                const box = document.createElement('div');
-                box.className = 'col-lg-3 mb-3';
-                
-                // Format date as DD-MM-YYYY
-                const formattedDate = date.toLocaleDateString('en-GB', {
-                    day: '2-digit',
-                    month: '2-digit',
-                    year: 'numeric'
-                });
-                
-                box.innerHTML = `
+        let currentYear = new Date().getFullYear();
+        let currentMonth = new Date().getMonth();
+        const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
+        function generateMonthCard(date, month, year) {
+
+            const box = document.createElement('div');
+            box.className = 'col-lg-2 col-md-6 mb-3';
+
+
+            box.innerHTML = `
                     <div class="date-card">
                         <div class="date-header">
-                            Date: ${formattedDate}
+                            Date :- ${date>9?date:`0${date}`}-${month+1>9?month+1:`0${month+1}`}-${year}
                         </div>
                         <div class="date-body">
-                            <div class="d-flex flex-wrap align-items-center mb-2">
+                            <div class="d-flex flex-wrap align-items-center">
                                 <div class="slot-item">
                                     <div class="dham-name">Yamunotri</div>
                                 </div>
@@ -495,46 +596,176 @@
                         </div>
                     </div>
                 `;
-                
-                availabilityGrid.appendChild(box);
+            return box;
+        }
+
+        function updateCalendarDisplay() {
+            const availabilityGrid = document.getElementById('availabilityGrid');
+            const currentMonthDisplay = document.getElementById('currentMonthDisplay');
+
+            availabilityGrid.innerHTML = '';
+            currentMonthDisplay.textContent = monthNames[currentMonth];
+            let lastDate = new Date(currentYear, currentMonth + 1, 0).getDate();
+            const isAvailableMonth = currentMonth >= 4 && currentMonth <= 9; // May (4) to October (9)
+            if (isAvailableMonth) {
+                // Generate all 12 months
+                for (let date = 1; date <= lastDate; date++) {
+                    availabilityGrid.appendChild(generateMonthCard(date, currentMonth, currentYear));
+                }
+            } else {
+                availabilityGrid.innerHTML = `
+                    <div class="date-card h-100">
+                        <div class="date-body no-data">
+                            <div class="text-center py-4">
+                                <p class="text-muted mb-0">No tours available in this month</p>
+                                <small class="text-muted">(Tours only available from May to October)</small>
+                            </div>
+                        </div>
+                    </div>
+                `;
             }
-            
-            // Show the modal
+        }
+
+        // Event listener for the check availability button
+        document.getElementById('checkAvailability').addEventListener('click', function() {
+            updateCalendarDisplay();
             const modal = new bootstrap.Modal(document.getElementById('availabilityModal'));
             modal.show();
         });
+
+        // Event listeners for year navigation
+        document.getElementById('prevMonth').addEventListener('click', function() {
+            currentMonth--;
+            updateCalendarDisplay();
+        });
+
+        document.getElementById('nextMonth').addEventListener('click', function() {
+            currentMonth++;
+            updateCalendarDisplay();
+        });
+
+        box.innerHTML = `
+                    <div class="date-card">
+                        <div class="date-header">
+                            Date: ${formattedDate}
+                        </div>
+                        <div class="date-body">
+                            <div class="d-flex flex-wrap align-items-center">
+                                <div class="slot-item">
+                                    <div class="dham-name">Yamunotri</div>
+                                </div>
+                                <div class="slot-item">
+                                    <div class="dham-name">Gangotri</div>
+                                </div>
+                                <div class="slot-item">
+                                    <div class="dham-name">Kedarnath</div>
+                                </div>
+                                <div class="slot-item">
+                                    <div class="dham-name">Badrinath</div>
+                                </div>
+                                <div class="slot-item">
+                                    <div class="dham-name">Hemkund Sahib</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+        availabilityGrid.appendChild(box);
+
+
+        // Show the modal
+        const modal = new bootstrap.Modal(document.getElementById('availabilityModal'));
+        modal.show();
     </script>
 
     <style>
+        /* Vehicle table styles */
+        #vehicleTable {
+            margin-bottom: 1.5rem;
+        }
+
+        #vehicleTable th {
+            background-color: #f8f9fa;
+            font-weight: 500;
+            padding: 8px;
+        }
+
+        #vehicleTable td {
+            padding: 8px;
+            vertical-align: middle;
+        }
+
+        #vehicleTable .btn-sm {
+            padding: 0.25rem 0.5rem;
+            margin: 0 2px;
+        }
+
+        /* Mode of travel section styles */
+        .vehicle-details .form-control,
+        .vehicle-details .form-select {
+            height: calc(2.5rem + 2px);
+        }
+
+        #availabilityModalLabel {
+            margin-left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .modal-dialog {
+            margin-top: 4%;
+            width: 75%;
+            height: 85%;
+            overflow-y: scroll;
+        }
+
         .slot-grid {
             display: grid;
-            gap: 0.5rem;
+            /* gap: 0.5rem; */
         }
-        
+
+        .date-body {
+            width: 100%;
+        }
+
+        .date-body>div {
+            width: 100%;
+        }
+
         .slot-item {
+            width: 50%;
             display: grid;
             grid-template-columns: repeat(1, 1fr);
             gap: 0.25rem;
-            padding: 0.25rem;
+            /* padding: 0.25rem; */
             font-size: 0.9rem;
+            border-bottom: 1px solid #fff;
         }
-        
-        .slot-item > * {
-            padding: 0.25rem 0.5rem;
-            border-radius: 4px;
+
+        .slot-item:nth-of-type(2n+1) {
+            border-right: 1px solid #fff;
+        }
+
+        .slot-item:last-child {
+            width: 100%;
+            border-bottom: none;
+        }
+
+        .slot-item>* {
+            padding: 2px 5px;
             text-align: center;
         }
-        
+
         .slot-item .dham-name {
             background-color: #9ed7ab;
             color: #fff;
             font-weight: 500;
         }
-        
+
         #availabilityModal .modal-dialog {
             max-width: 90%;
         }
-        
+
         .badge {
             font-weight: normal;
             font-size: 0.9rem;
@@ -548,14 +779,13 @@
 
         .date-header {
             background-color: #f8f9fa;
-            padding: 0.5rem;
+            padding: 2px 5px;
             border-bottom: 1px solid #dee2e6;
-            font-size: 0.9rem;
-            font-weight: 500;
+            font-size: 12px;
         }
-        
-        .date-body {
-            padding: 0.5rem;
+
+        #availabilityGrid>div {
+            margin: 6px 0px !important;
         }
     </style>
 

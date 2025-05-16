@@ -102,7 +102,7 @@ document.querySelectorAll('.download-pdf').forEach(button => {
 
         // Add pilgrim details in tabular format
         doc.setFontSize(10);
-        const startY = 90;
+        const startY = 80;
         const lineHeight = 9;
 
         // Function to add a row with border
@@ -158,7 +158,7 @@ document.querySelectorAll('.download-pdf').forEach(button => {
         currentY += lineHeight;
 
         addRow('Address', pilgrimData.address, currentY);
-        currentY += lineHeight;
+        currentY += lineHeight+10;
 
         addRow('City', pilgrimData.city, currentY);
         currentY += lineHeight;

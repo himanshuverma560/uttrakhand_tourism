@@ -1,11 +1,11 @@
 <div class="col-md-3">
-    <div class="sidebar-profile mb-4">
-        <div class="profile-info bg-primary text-white p-4">
-            <div class="text-center mb-3">
+    <div class="sidebar-profile mb-1">
+        <div class="profile-info bg-primary text-white p-2">
+            <div class="text-center mb-1">
                 <i class="fas fa-user-circle fa-3x"></i>
             </div>
-            <h6 class="mb-1">{{ Auth::user()->user_type }}</h6>
-            <h5 class="mb-1">{{ Auth::user()->name }}</h5>
+            <h6 class="mb-0">{{ Auth::user()->user_type }}</h6>
+            <h5 class="mb-0">{{ Auth::user()->name }}</h5>
             <p class="mb-0">{{ Auth::user()->mobile }}</p>
         </div>
     </div>
