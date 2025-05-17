@@ -72,7 +72,11 @@ class WebsiteController extends Controller
         $user->unique_id = $uniqueNumber;
         $user->save();
 
-        return redirect()->back()->with('success', 'Registration successful!');
+        Auth::login($user);
+
+        return redirect()->intended('user/dashboard');
+
+        //return redirect()->back()->with('success', 'Registration successful!');
     }
 
 
@@ -137,7 +141,8 @@ class WebsiteController extends Controller
 
         do {
             $uniqueNumber = str_pad(mt_rand(1, 99999999), 8, '0', STR_PAD_LEFT);
-            $tourId = 'UK-' . $uniqueNumber;
+            //$tourId = 'UK-' . $uniqueNumber;
+            $tourId = $uniqueNumber;
         } while (Tour::where('tour_id', $tourId)->exists());
 
 

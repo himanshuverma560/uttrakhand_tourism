@@ -8,6 +8,20 @@
             @if (session('success'))
                 <div class="alert alert-success">{{ session('success') }}</div>
             @endif
+            <form method="GET" action="{{ route('admin.dashboard') }}" class="mb-4 row g-3">
+                <div class="col-md-4">
+                    <input type="text" name="mobile" class="form-control" placeholder="Search by Mobile"
+                        value="{{ request('mobile') }}">
+                </div>
+                <div class="col-md-4">
+                    <input type="text" name="email" class="form-control" placeholder="Search by Email"
+                        value="{{ request('email') }}">
+                </div>
+                <div class="col-md-4">
+                    <button type="submit" class="btn btn-primary">Search</button>
+                    <a href="{{ route('admin.dashboard') }}" class="btn btn-secondary">Reset</a>
+                </div>
+            </form>
             <table class="table">
                 <thead>
                     <tr>
@@ -26,29 +40,41 @@
                             <td>{{ $tour->name }}</td>
                             <td>{{ $tour->email }}</td>
                             <td>{{ $tour->mobile }}</td>
-                            <td>{{ $tour->tour->tour_id }}</td>
-                            <td>{{ \Carbon\Carbon::parse($tour->start_date)->format('d-m-Y') }}
-                                to
-                                {{ \Carbon\Carbon::parse($tour->end_date)->format('d-m-Y') }}</td>
+                            <td>{{ $tour->tour_id ?? 'N/A' }}</td>
                             <td>
-                                <?php
-                                
-                                $date_wise_destination = json_decode($tour->tour->date_wise_destination, true);
-                                //dd($date_wise_destination);
-                                foreach ($date_wise_destination as $destination) {
-                                    echo $destination['dham'] . '-' . $destination['date'] . '<br>';
-                                }
-                                ?>
+                                @if ($tour->start_date && $tour->end_date)
+                                    {{ \Carbon\Carbon::parse($tour->start_date)->format('d-m-Y') }} to
+                                    {{ \Carbon\Carbon::parse($tour->end_date)->format('d-m-Y') }}
+                                @else
+                                    N/A
+                                @endif
+                            </td>
+                            <td>
+                                @php
+                                    $decoded = json_decode($tour->date_wise_destination ?? '', true);
+                                    // Decode again if it's still a string
+                                    if (is_string($decoded)) {
+                                        $decoded = json_decode($decoded, true);
+                                    }
+
+                                    if (is_array($decoded)) {
+                                        foreach ($decoded as $destination) {
+                                            echo $destination['dham'] . '-' . $destination['date'] . '<br>';
+                                        }
+                                    }
+                                @endphp
+
                             </td>
 
                             <td>
-                                @if ($tour->status == 0)
+                                @if ($tour->status && $tour->status == 0)
                                     <form action="{{ route('admin.pilgrim.verify', $tour->id) }}" method="POST">
                                         @csrf
 
                                         <button type="submit" class="btn btn-success btn-sm">Verify</button>
                                     </form>
-                                @else
+                                @endif
+                                @if ($tour->status == 1)
                                     <span class="badge bg-success">Verified</span>
                                 @endif
                             </td>

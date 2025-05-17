@@ -21,6 +21,20 @@
                         </div>
 
                         <div class="mb-3">
+                            <label for="name" class="form-label">Price</label>
+                            <input type="text" name="price" class="form-control" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Select Dham</label>
+                            <select class="form-control" name="dham_id">
+                                @foreach ($dhams as $dham)
+                                <option value="{{$dham->id}}">{{$dham->name}}</option>  
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
                             <label for="qr_image" class="form-label">QR Image</label>
                             <input type="file" name="qr_image" class="form-control" required>
                         </div>
@@ -37,23 +51,33 @@
                         <thead>
                             <tr>
                                 <th>Name</th>
+                                <th>Price</th>
+                                <th>Dham</th>
                                 <th>QR Image</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             @forelse ($qrs as $qr)
                                 <tr>
                                     <td>{{ $qr->name }}</td>
+                                    <td>{{ $qr->price }}</td>
+                                    <td>{{ $qr->dham->name }}</td>
                                     <td>
                                         <img src="{{ asset($qr->qr_image) }}" alt="{{ $qr->name }}" width="80">
+                                    </td>
+                                    <td>
+                                        <a href="{{ route('qr.download', $qr->id) }}" class="btn btn-sm btn-success">Download</a>
+                                        <a href="{{ route('qr.edit', $qr->id) }}" class="btn btn-sm btn-warning">Edit</a>
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="2">No QRs uploaded yet.</td>
+                                    <td colspan="5">No QRs uploaded yet.</td>
                                 </tr>
                             @endforelse
                         </tbody>
+                        
                     </table>
                 </div>
             </div>

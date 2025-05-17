@@ -51,5 +51,10 @@ Route::prefix('admin')->middleware(['admin'])->group(function () {
     Route::post('/qr-upload', [AdminController::class, 'storeQr'])->name('qr.store');
     Route::post('payments/status', [AdminController::class, 'paymentStatus'])->name('admin.payments.status');
     Route::post('/pilgrim/verify/{id}', [AdminController::class, 'verifyPilgrim'])->name('admin.pilgrim.verify');
+
+    Route::get('admin/qr/download/{id}', [AdminController::class, 'downloadQr'])->name('qr.download');
+    Route::get('admin/qr/edit/{id}', [AdminController::class, 'editQr'])->name('qr.edit');
+    Route::post('admin/qr/update/{id}', [AdminController::class, 'updateQr'])->name('qr.update');
+
     Route::get('logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
 });
