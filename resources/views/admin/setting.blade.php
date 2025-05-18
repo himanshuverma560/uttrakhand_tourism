@@ -11,12 +11,12 @@
         {{-- Left: Upload QR + List (col-8) --}}
         <div class="col-md-8">
             <div class="card mb-4">
-                <div class="card-header"><strong>Upload QR</strong></div>
+                <div class="card-header"><strong>Price master</strong></div>
                 <div class="card-body">
-                    <form action="{{ route('qr.store') }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('price.store') }}" method="POST">
                         @csrf
                         <div class="mb-3">
-                            <label for="name" class="form-label">QR Name</label>
+                            <label for="name" class="form-label">Title</label>
                             <input type="text" name="name" class="form-control" required>
                         </div>
 
@@ -33,13 +33,7 @@
                                 @endforeach
                             </select>
                         </div>
-
-                        <div class="mb-3">
-                            <label for="qr_image" class="form-label">QR Image</label>
-                            <input type="file" name="qr_image" class="form-control" required>
-                        </div>
-
-                        <button type="submit" class="btn btn-primary">Upload</button>
+                        <button type="submit" class="btn btn-primary">Submit</button>
                     </form>
                 </div>
             </div>
@@ -53,22 +47,20 @@
                                 <th>Name</th>
                                 <th>Price</th>
                                 <th>Dham</th>
-                                <th>QR Image</th>
+                                
                                 <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse ($qrs as $qr)
+                            @forelse ($dhamPayments as $payment)
                                 <tr>
-                                    <td>{{ $qr->name }}</td>
-                                    <td>{{ $qr->price }}</td>
-                                    <td>{{ $qr->dham->name }}</td>
+                                    <td>{{ $payment->name }}</td>
+                                    <td>{{ $payment->price }}</td>
+                                    <td>{{ $payment->dham->name }}</td>
+                                    
                                     <td>
-                                        <img src="{{ asset($qr->qr_image) }}" alt="{{ $qr->name }}" width="80">
-                                    </td>
-                                    <td>
-                                        <a href="{{ route('qr.download', $qr->id) }}" class="btn btn-sm btn-success">Download</a>
-                                        <a href="{{ route('qr.edit', $qr->id) }}" class="btn btn-sm btn-warning">Edit</a>
+                                        
+                                        <a href="{{ route('price.edit', $payment->id) }}" class="btn btn-sm btn-warning">Edit</a>
                                     </td>
                                 </tr>
                             @empty
@@ -101,6 +93,45 @@
                     </form>
                 </div>
             </div>
+            <br>
+
+            <div class="card">
+                <div class="card-header"><strong>Upload Payment QR</strong></div>
+                <div class="card-body">
+                    {{-- You can replace this with a real form or toggle switch --}}
+                    <form action="{{route('qr.store')}}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <div class="form-check mb-3">
+                            <label for="qr_image" class="form-label">QR Image</label>
+                            <input type="file" name="qr_image" class="form-control" required>
+                        </div>
+                        <div class="form-check mb-3">
+                            <label for="qr_image" class="form-label">UPI</label>
+                            <input type="text" name="upi" class="form-control" required>
+                        </div>
+                        <button type="submit" class="btn btn-info w-100">Upload</button>
+                    </form>
+
+                    <table class="table">
+                        <tr>
+                            <th>Upi</th>
+                            <th>QR</th>
+                            <th>Action</th>
+                        </tr>
+                        @foreach ($qrs as $qr)
+                            <tr>
+                                <td>{{ $qr->upi }}</td>
+                                <td><img src="{{ asset($qr->qr_image) }}" width="70px"></td>
+                                <td>
+                                    <a href="{{ route('qr.download', $qr->id) }}" class="btn btn-sm btn-success">Download</a>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </table>
+                    
+                </div>
+            </div>
+
         </div>
     </div>
 </div>

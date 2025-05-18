@@ -4,7 +4,7 @@
     <br>
     <h2>Edit QR</h2>
 
-    <form action="{{ route('qr.update', $qr->id) }}" method="POST" enctype="multipart/form-data">
+    <form action="{{ route('price.update', $qr->id) }}" method="POST" enctype="multipart/form-data">
         @csrf
 
         <div class="mb-3">
@@ -28,13 +28,9 @@
             </select>
         </div>
 
-        <div class="mb-3">
-            <label for="qr_image" class="form-label">QR Image</label>
-            <input type="file" name="qr_image" class="form-control">
-            <small>Current: <img src="{{ asset($qr->qr_image) }}" width="100"></small>
-        </div>
+       
 
-        <button type="submit" class="btn btn-primary">Update QR</button>
+        <button type="submit" class="btn btn-primary">Update Price</button>
     </form>
 </div>
 @endsection

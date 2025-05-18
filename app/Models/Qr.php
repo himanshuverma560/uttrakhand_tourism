@@ -9,10 +9,6 @@ class Qr extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'qr_image', 'price', 'dham_id'];
+    protected $fillable = ['qr_image', 'upi'];
 
-    public function dham()
-    {
-        return $this->belongsTo(Dham::class);
-    }
 }

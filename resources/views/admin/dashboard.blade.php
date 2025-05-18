@@ -22,7 +22,7 @@
                     <a href="{{ route('admin.dashboard') }}" class="btn btn-secondary">Reset</a>
                 </div>
             </form>
-            <table class="table">
+            <table class="table table-bordered">
                 <thead>
                     <tr>
                         <th>Name</th>
@@ -50,32 +50,38 @@
                                 @endif
                             </td>
                             <td>
-                                @php
-                                    $decoded = json_decode($tour->date_wise_destination ?? '', true);
-                                    // Decode again if it's still a string
-                                    if (is_string($decoded)) {
-                                        $decoded = json_decode($decoded, true);
-                                    }
-
-                                    if (is_array($decoded)) {
-                                        foreach ($decoded as $destination) {
-                                            echo $destination['dham'] . '-' . $destination['date'] . '<br>';
-                                        }
-                                    }
-                                @endphp
+                                {{ $tour->date_wise_destination }}
 
                             </td>
 
                             <td>
-                                @if ($tour->status && $tour->status == 0)
+                                @if (isset($tour->status) && $tour->status == 0)
                                     <form action="{{ route('admin.pilgrim.verify', $tour->id) }}" method="POST">
                                         @csrf
 
                                         <button type="submit" class="btn btn-success btn-sm">Verify</button>
                                     </form>
                                 @endif
-                                @if ($tour->status == 1)
+                                @if (isset($tour->status) && $tour->status == 1)
                                     <span class="badge bg-success">Verified</span>
+                                    <button class="btn btn-warning btn-sm download-pdf" data-regno="{{ $tour->unique_id }}"
+                                        data-group-id="{{ $tour->tour_id }}"
+                                        data-destination="{{ $tour->date_wise_destination }}" data-tour-days="5"
+                                        data-selected-dates="{{ $tour->date_wise_destination }}"
+                                        data-full-name="{{ $tour->name }}" data-gender="{{ $tour->gender }}"
+                                        data-age="{{ $tour->age }}" data-diseases="NA"
+                                        data-aadhar="{{ $tour->aadhar_card }}" data-email="{{ $tour->email }}"
+                                        data-mobile="{{ $tour->mobile }}" data-address="{{ $tour->address }}"
+                                        data-state="{{ $tour->state }}" data-photo-url="{{$tour->profile_image_path}}"
+                                        data-qr-url="{{$tour->profile_image_path}}", data-city="{{ $tour->city }}",
+                                        data-country="{{ $tour->country }}", data-district="{{ $tour->district }}",
+                                        data-contact-number="{{ $tour->contact_number }}",
+                                        data-contact-person="{{ $tour->contact_person }}",
+                                        data-contact-relation="{{ $tour->contact_relation }}",
+                                        data-vehicle-details="{{ $tour->vehicle_details }}",
+                                        data-drivers-name="{{ $tour->driver_name }}",
+                                        data-vehicle-number="{{ $tour->vehicle_number }}">
+                                        Download PDF</button>
                                 @endif
                             </td>
 
@@ -88,4 +94,8 @@
         </div>
 
     </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{{ asset('js/download.js') }}"></script>
 @endsection
