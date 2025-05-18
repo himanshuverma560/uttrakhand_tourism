@@ -127,8 +127,10 @@ document.querySelectorAll('.download-pdf').forEach(button => {
         addRow('Destination', pilgrimData.destination, currentY);
         currentY += lineHeight;
 
+        addRow('Tour Days', pilgrimData.tourDays, currentY);
+        currentY += lineHeight;
 
-        addRow('Destination Date', pilgrimData.selectedDates, currentY);
+        addRow('Selected Dham Destination Date', pilgrimData.selectedDates, currentY);
         currentY += lineHeight;
 
         addRow('Full Name', pilgrimData.fullName, currentY);

@@ -55,17 +55,11 @@
                                             </thead>
                                             <tbody>
                                                 @foreach ($data as $value)
-                                                    
-                                                @php
-                                                    $date_wise_destination = json_decode($value->tour->date_wise_destination, true);
-                                                    $destination = implode(', ', array_column($date_wise_destination, 'dham'))
-                                                
-                                                @endphp
-
+                                            
                                                 <tr>
                                                     <td><a href="#" class="text-primary">{{$value->name}}</a></td>
                                                     <td>{{$value->mobile}}</td>
-                                                    <td>{{$value->tour->tour_id}}</td>
+                                                    <td>{{$value->tour_id}}</td>
                                                     <td>
                                                         <div class="d-flex justify-content-center gap-2">
                                                             <a href="{{route('editPligrim', ['id' => $value->id])}}" class="btn btn-sm btn-link p-0"><i class="fas fa-edit"></i></a>
@@ -78,13 +72,10 @@
                                                         @if ($value->status == 1)
                                                         <button class="btn btn-danger download-pdf"
                                                         data-regno="{{Auth::user()->unique_id}}"
-                                                        data-group-id="{{$value->tour->tour_id}}"
-                                                        data-destination="{{$destination}}"
-                                                        data-tour-days="5"
-                                                        data-selected-dates="<?php $date_wise_destination = json_decode($value->tour->date_wise_destination, true);
-                                                        foreach ($date_wise_destination as $destination) {
-                                                            echo $destination['dham'] . '-' . $destination['date'] .",";
-                                                        } ?>"
+                                                        data-group-id="{{$value->tour_id}}"
+                                                        data-destination="{{$value->destinations}}"
+                                                        data-tour-days="{{$value->tour_days}}"
+                                                        data-selected-dates="{{$value->date_wise_destination}}"
                                                         data-full-name="{{$value->name}}"
                                                         data-gender="{{$value->gender}}"
                                                         data-age="{{$value->age}}"
@@ -94,7 +85,7 @@
                                                         data-mobile="{{$value->mobile}}"
                                                         data-address="{{$value->address}}"
                                                         data-state="{{$value->state}}"
-                                                        data-photo-url="{{$value->getProfileImageUrl()}}"
+                                                        data-photo-url="{{$value->profile_image_path}}"
                                                         data-qr-url="https://example.com/qr.jpg",
                                                         data-city="{{$value->city}}",
                                                         data-country="{{$value->country}}",
@@ -103,8 +94,8 @@
                                                         data-contact-person="{{$value->contact_person}}",
                                                         data-contact-relation="{{$value->contact_relation}}",
                                                         data-vehicle-details="{{$value->vehicle_details}}",
-                                                        data-drivers-name="{{$value->tour->drivers_name}}",
-                                                        data-vehicle-number="{{$value->tour->vehicle_number}}">
+                                                        data-drivers-name="{{$value->driver_name}}",
+                                                        data-vehicle-number="{{$value->vehicle_number}}">
                                                         Download PDF</button>
                                                         @endif
 
@@ -112,6 +103,31 @@
                                                             <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#qrModal{{ $qr->id }}">
                                                                 Payment
                                                             </button>
+
+                                                            <div class="modal fade" id="qrModal{{ $qr->id }}" tabindex="-1" aria-labelledby="qrModalLabel{{ $qr->id }}" aria-hidden="true">
+                                                                <div class="modal-dialog modal-dialog-centered">
+                                                                    <div class="modal-content text-center">
+                                                                        <div class="modal-header">
+                                                                            <h5 class="modal-title" id="qrModalLabel{{ $qr->id }}">Payble Amount: {{$value->amount}}</h5>
+                                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                        </div>
+                                                                        <div class="modal-body">
+                                                                            <h5>UPI ID: {{$qr->upi}}</h5>
+                                                                            <img src="{{ asset($qr->qr_image) }}" alt="{{ $qr->name }}" class="img-fluid" style="max-width: 250px;">
+                                                                            <form action="{{route('qr.store')}}" method="POST" enctype="multipart/form-data">
+                                                                                @csrf
+                                                                                <div class="form-check mb-3">
+                                                                                    <label for="qr_image" class="form-label">Upload Payment ScreenShort</label>
+                                                                                    <input type="file" name="qr_image" class="form-control" required>
+                                                                                </div>
+                                                                            
+                                                                                <button type="submit" class="btn btn-info w-80">Upload</button>
+                                                                            </form>
+                                                    
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
                                                         @endif
                                                     </td>
 
@@ -137,19 +153,7 @@
         </div>
     </div>
 
-    <div class="modal fade" id="qrModal{{ $qr->id }}" tabindex="-1" aria-labelledby="qrModalLabel{{ $qr->id }}" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content text-center">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="qrModalLabel{{ $qr->id }}">{{ $qr->name }}</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <img src="{{ asset($qr->qr_image) }}" alt="{{ $qr->name }}" class="img-fluid" style="max-width: 250px;">
-                </div>
-            </div>
-        </div>
-    </div>
+    
     <script src="{{ asset('js/download.js') }}"></script>
     <!-- Bootstrap JS -->
     @include('partials.user_footer')

@@ -58,6 +58,8 @@ class AdminController extends Controller
 
         foreach ($tours as $tour) {
             $date_wise_destination = '';
+            $tour_days = [];
+            $destinations = [];
             $decoded = json_decode($tour->date_wise_destination ?? '', true);
             // Decode again if it's still a string
             if (is_string($decoded)) {
@@ -67,9 +69,16 @@ class AdminController extends Controller
             if (is_array($decoded)) {
                 foreach ($decoded as $destination) {
                     $date_wise_destination .= $destination['dham'] . '-' . $destination['date'] .",";
+                    $tour_days[] = $destination['date'];
+                    $destinations[] = $destination['dham'];
                 }
+                
             }
+            $startDate = $tour_days[0] ?? '';
+            $endDate = end($tour_days) ?: '';
             $tour->date_wise_destination = $date_wise_destination ?? '';
+            $tour->tour_days = "$startDate - $endDate";
+            $tour->destinations = end($destinations) ?? '';
             $tour->profile_image_path = $tour->profile_image_path ? asset($tour->profile_image_path) : '';
         }
 

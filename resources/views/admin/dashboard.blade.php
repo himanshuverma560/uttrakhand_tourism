@@ -66,7 +66,7 @@
                                     <span class="badge bg-success">Verified</span>
                                     <button class="btn btn-warning btn-sm download-pdf" data-regno="{{ $tour->unique_id }}"
                                         data-group-id="{{ $tour->tour_id }}"
-                                        data-destination="{{ $tour->date_wise_destination }}" data-tour-days="5"
+                                        data-destination="{{ $tour->destinations }}" data-tour-days="{{$tour->tour_days}}"
                                         data-selected-dates="{{ $tour->date_wise_destination }}"
                                         data-full-name="{{ $tour->name }}" data-gender="{{ $tour->gender }}"
                                         data-age="{{ $tour->age }}" data-diseases="NA"

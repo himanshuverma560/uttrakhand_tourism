@@ -12,6 +12,7 @@ use App\Models\User;
 use App\Models\Tour;
 use App\Models\Pilgrim;
 use Illuminate\Support\Facades\Storage;
+use App\Models\DhamPayment;
 
 class WebsiteController extends Controller
 {
@@ -114,11 +115,78 @@ class WebsiteController extends Controller
 
     public function download()
     {
+        $payments = DhamPayment::all();
+        $query = \DB::table('users')
+            ->leftJoin('add_pilgrims', 'users.id', '=', 'add_pilgrims.user_id')
+            ->leftJoin('tours', 'add_pilgrims.tour_id', '=', 'tours.id')
+            ->leftJoin('aadhaar_verifications', 'aadhaar_verifications.aadhaar_number', '=', 'add_pilgrims.aadhar_card')
+            ->select(
+                'users.name',
+                'users.email',
+                'users.unique_id',
+                'users.mobile',
+                'tours.start_date',
+                'tours.end_date',
+                'tours.tour_id',
+                'tours.driver_name',
+                'tours.vehicle_number',
+                'tours.date_wise_destination',
+                'add_pilgrims.status',
+                'add_pilgrims.id',
+                'add_pilgrims.gender',
+                'add_pilgrims.age',
+                'add_pilgrims.city',
+                'add_pilgrims.state',
+                'add_pilgrims.country',
+                'add_pilgrims.district',
+                'add_pilgrims.contact_person',
+                'add_pilgrims.contact_number',
+                'add_pilgrims.contact_relation',
+                'add_pilgrims.aadhar_card',
+                'add_pilgrims.address',
+                'add_pilgrims.vehicle_details',
+                'aadhaar_verifications.profile_image_path'
+            )
+            ->where('users.id', Auth::user()->id)
+            ->orderBy('users.id', 'desc');
+        $data = $query->get();
 
-        $data = Pilgrim::with('tour')
-            ->where('user_id', Auth::user()->id)
-            ->get();
-        
+        foreach ($data as $tour) {
+            $date_wise_destination = '';
+            $tour_days = [];
+            $destinations = [];
+            $decoded = json_decode($tour->date_wise_destination ?? '', true);
+            // Decode again if it's still a string
+            if (is_string($decoded)) {
+                $decoded = json_decode($decoded, true);
+            }
+
+            if (is_array($decoded)) {
+                foreach ($decoded as $destination) {
+                    $date_wise_destination .= $destination['dham'] . '-' . $destination['date'] . ",";
+                    $tour_days[] = $destination['date'];
+                    $destinations[] = $destination['dham'];
+                }
+
+            }
+            
+            $amount = 0;
+            foreach ($destinations as $destination) {
+                foreach ($payments as $payment) {
+                    if ($destination == $payment->dham->name) {
+                        $amount += $payment->price;
+                    }
+                }
+            }
+            
+            $startDate = $tour_days[0] ?? '';
+            $endDate = end($tour_days) ?: '';
+            $tour->date_wise_destination = $date_wise_destination ?? '';
+            $tour->tour_days = "$startDate - $endDate";
+            $tour->destinations = end($destinations) ?? '';
+            $tour->profile_image_path = $tour->profile_image_path ? asset($tour->profile_image_path) : '';
+            $tour->amount = $amount;
+        }
         $qr = Qr::first();
         $payment = Setting::where('id', 1)->first();
         return view('download', compact('data', 'qr', 'payment'));
@@ -244,6 +312,6 @@ class WebsiteController extends Controller
 
     }
 
-    
+
 
 }
