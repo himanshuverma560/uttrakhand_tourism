@@ -540,7 +540,7 @@
 
             });
         }
-     //   collapsAll('none')
+        collapsAll('none')
     </script>
     @include('partials.user_footer')
 </body>
