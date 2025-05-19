@@ -1,0 +1,430 @@
+/* Mobile Responsive Styles */
+
+/* Tablet Styles */
+@media screen and (max-width: 991.98px) {
+    /* Navigation */
+    .navbar-nav {
+        padding-top: 1rem;
+    }
+    
+    .nav-link {
+        padding: 0.5rem 0;
+    }
+    
+    .navbar-brand {
+        font-size: 1.2rem;
+    }
+    
+    .navbar-toggler {
+        border-color: #6ba535;
+    }
+    
+    .navbar-toggler:focus {
+        box-shadow: none;
+    }
+
+    /* Header */
+    .header {
+        position: sticky;
+        top: 8%;
+    }
+
+    /* Grid */
+    .col-lg-2 {
+        width: 33.33%;
+    }
+}
+
+/* Mobile Styles */
+@media screen and (max-width: 768px) {
+    /* General Layout */
+    .container {
+        padding: 0 15px;
+    }
+    .top-bar>.container>div{
+        flex-direction: column;
+    }
+    .top-bar>.container>div>.text-controls button{
+        width: unset !important;
+    }
+    .dashboard-content {
+        width: 100%;
+        margin: 0;
+        padding: 10px;
+    }
+
+    /* Navigation */
+    .navbar-nav {
+        padding: 15px 0;
+        background: white;
+        text-align: center;
+    }
+    .fixed-top{
+        top: 8% !important;
+    }
+
+    .navbar-nav .nav-link {
+        padding: 10px 0;
+    }
+
+    /* Dashboard Layout */
+    .dashboard-content .container-fluid > .row {
+        flex-direction: column;
+    }
+
+    .col-md-3 {
+        width: 100%;
+        margin-bottom: 20px;
+    }
+
+    .col-md-9 {
+        width: 100%;
+    }
+
+    /* Sidebar */
+    .sidebar-profile {
+        margin: 0 -15px;
+        border-radius: 0;
+    }
+
+    .sidebar-menu {
+        margin: 0 -15px;
+    }
+
+    /* Cards and Tables */
+    .dashboard-card {
+        width: 100%;
+        margin-bottom: 15px;
+    }
+
+    .table-responsive {
+        margin: 0 -15px;
+        width: calc(100% + 30px);
+    }
+
+    .table td, .table th {
+        white-space: nowrap;
+        min-width: 100px;
+    }
+
+    /* Forms */
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .form-control {
+        font-size: 16px; /* Better touch target on mobile */
+    }
+
+    /* Buttons */
+    .btn {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    .btn-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* Modal */
+    .modal-dialog {
+        margin: 10px;
+        width: auto;
+    }
+
+    /* Tour Registration Section */
+    .tour-registration-section .card {
+        border-radius: 0;
+        margin: 0 -15px;
+    }
+
+    /* Vehicle Table */
+    #vehicleTable {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+
+    /* Calendar View */
+    #availabilityGrid {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+
+    .date-card {
+        margin: 5px !important;
+    }
+
+    /* Profile Section */
+    .profile-info {
+        text-align: center;
+        padding: 15px !important;
+    }
+
+    /* Footer */
+    .footer .container {
+        padding: 20px 15px;
+    }
+
+    /* Welcome Page */
+    .hero-section {
+        margin-top: 56px;
+    }
+
+    .explore-section .row {
+        margin: 0 -5px;
+    }
+
+    .explore-card {
+        margin: 5px 0;
+    }
+
+    .category-icons .col {
+        flex: 0 0 50%;
+        max-width: 50%;
+        margin-bottom: 15px;
+    }
+
+    .social-card {
+        margin: 5px 0;
+    }
+
+    /* Blog Section */
+    .blog-card {
+        margin: 10px 0;
+    }
+
+    /* Articles */
+    .article-content {
+        padding: 15px !important;
+    }
+}
+
+/* Small phone styles */
+@media screen and (max-width: 480px) {
+    /* Navigation */
+    .navbar-brand img {
+        height: 35px;
+    }
+
+    .navbar-toggler {
+        padding: 4px 8px;
+        font-size: 1rem;
+    }
+
+    /* Layout */
+    .container {
+        padding: 0 10px;
+    }
+
+    /* Grid */
+    .col-lg-2, .col-md-3, .col-6 {
+        width: 100%;
+        margin-bottom: 15px;
+    }
+
+    .navbar-brand img{
+        height: 50px;
+    }
+    /* Dashboard */
+    .dashboard-header {
+        height: 200px;
+        padding: 20px;
+        margin-top: 0px;
+        display: flex;
+        align-items: flex-end;
+    }
+
+    .dashboard-header h1 {
+        font-size: 24px;
+        margin: 0px;
+        text-align: center;
+    }
+
+    /* Components */
+    .dashboard-card {
+        height: auto;
+        padding: 10px;
+    }
+
+    .dashboard-card .icon-circle {
+        width: 45px;
+        height: 45px;
+    }
+
+    .dashboard-card .icon-circle i {
+        font-size: 18px;
+    }
+
+    /* Content */
+    .card-content h4 {
+        font-size: 15px;
+    }
+
+    .card-content p {
+        font-size: 12px;
+        height: 40px;
+    }
+
+    .category-icons .col {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+
+    #availabilityGrid {
+        grid-template-columns: repeat(1, 1fr) !important;
+    }
+
+    .dashboard-card {
+        height: auto;
+        padding: 15px;
+    }
+    .dashboard-card .card-icon{
+        padding: 10px;
+        margin-bottom: 10px;
+    }
+    .dashboard-card .icon-circle {
+        width: 50px;
+        height: 50px;
+    }
+
+    .dashboard-card .icon-circle i {
+        font-size: 20px;
+    }
+
+    .card-content h4 {
+        font-size: 16px;
+    }
+
+    .card-content p {
+        font-size: 14px;
+    }
+}
+
+/* Extra small phone styles */
+@media screen and (max-width: 360px) {
+    /* Layout */
+    .container {
+        padding: 0 8px;
+    }
+
+    /* Text */
+    h1, .h1 { font-size: 24px; }
+    h2, .h2 { font-size: 20px; }
+    h3, .h3 { font-size: 18px; }
+    
+    /* Forms */
+    input, select, textarea {
+        font-size: 16px !important; /* Prevent zoom on iOS */
+    }
+
+    /* Buttons */
+    .btn {
+        padding: 8px 16px;
+        font-size: 14px;
+        min-height: 44px; /* Better touch targets */
+    }
+
+    /* Navigation */
+    .nav-link {
+        padding: 12px 8px; /* Larger touch targets */
+    }
+
+    /* Cards */
+    .card {
+        margin-bottom: 15px;
+    }
+
+    .card-body {
+        padding: 15px;
+    }
+
+    /* Tables */
+    .table {
+        font-size: 13px;
+    }
+}
+
+/* Touch device improvements */
+@media (hover: none) {
+    /* Make buttons more touch-friendly */
+    .btn, .nav-link, .form-control {
+        cursor: default;
+    }
+
+    /* Increase tap target sizes */
+    .social-icon-circle {
+        width: 44px;
+        height: 44px;
+    }
+
+    /* Remove hover states */
+    .btn:hover,
+    .nav-link:hover,
+    .card:hover {
+        transform: none !important;
+    }
+
+    /* Improve scrolling */
+    .table-responsive,
+    .modal-body {
+        -webkit-overflow-scrolling: touch;
+    }
+}
+
+/* Accessibility Improvements */
+@media screen and (prefers-reduced-motion: reduce) {
+    /* Reduce animations */
+    * {
+        transition: none !important;
+        animation: none !important;
+    }
+}
+
+@media screen and (prefers-contrast: more) {
+    /* Increase contrast */
+    .btn, .nav-link, .form-control {
+        border-width: 2px;
+    }
+
+    .card {
+        box-shadow: 0 0 0 1px rgba(0,0,0,0.2);
+    }
+
+    .text-muted {
+        color: #595959 !important;
+    }
+}
+
+/* Print styles */
+@media print {
+    /* Hide non-essential elements */
+    .sidebar, .navbar, .footer, .social-icons {
+        display: none !important;
+    }
+
+    /* Ensure text is readable */
+    body {
+        font-size: 12pt;
+        line-height: 1.5;
+        color: #000;
+        background: #fff;
+    }
+
+    /* Make links useful */
+    a::after {
+        content: " (" attr(href) ")";
+        font-size: 0.9em;
+    }
+
+    /* Break tables appropriately */
+    tr, img {
+        page-break-inside: avoid;
+    }
+
+    /* Remove shadows and backgrounds */
+    .card {
+        box-shadow: none !important;
+        border: 1px solid #ddd;
+    }
+}
