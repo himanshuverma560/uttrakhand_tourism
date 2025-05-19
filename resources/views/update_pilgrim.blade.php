@@ -311,13 +311,15 @@
                                                     <label class="form-label">Select vehicle details for this pilgrim
                                                         <span class="text-danger">*</span></label>
                                                     <select class="form-select" required name="vehicle_details">
-                                                        @for ($i = 1; $i <= 8; $i++)
-                                                            <option value="taxi{{ $i }}"
-                                                                {{ old('vehicle_details', $pilgrim->vehicle_details) == "taxi$i" ? 'selected' : '' }}>
-                                                                Taxi/Maxi - {{ $i }}
-                                                                ({{ $i }}/8)
-                                                            </option>
-                                                        @endfor
+                                                        <?php
+                                                        $driver = $data->getDriverDetailsArray();
+                                                        
+                                                        if (!empty($driver)) {
+                                                            foreach ($driver as $d) {
+                                                                echo '<option value='.htmlspecialchars($d).'>' . htmlspecialchars($d) . '</option>';
+                                                            }
+                                                        }
+                                                        ?>
                                                     </select>
                                                 </div>
                                             </div>

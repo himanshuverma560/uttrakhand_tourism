@@ -111,7 +111,9 @@ class WebsiteController extends Controller
         $pilgrim = Pilgrim::where('id', $id)
             ->where('user_id', Auth::user()->id)
             ->first();
-        return view('update_pilgrim', compact('id', 'pilgrim'));
+
+        $data = Tour::find($pilgrim->tour_id);
+        return view('update_pilgrim', compact('id', 'pilgrim', 'data'));
     }
 
     public function download()
