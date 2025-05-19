@@ -27,15 +27,17 @@
                                         @csrf
                                         <!-- Aadhaar Verification Section -->
                                         <div class="aadhaar-section">
-                                            <h5 class="mb-3">Fill Person Information With Aadhaar Details</h5>
-                                            <p class="text-muted small">(If You Do Not Have An Aadhaar Card, Visit
+                                            <!-- <h5 class="mb-3">Fill Person Information With Aadhaar Details</h5> -->
+                                             <p class="planPilgrim">Plan Your Destination &nbsp;&nbsp;&nbsp;&nbsp;<b>[Selected Tour Name: Tour_04052025.1]</b><!--Tour Data--></p>
+                                             <p class="tourDetail">Kedarnath</p>
+                                            <p class="text-muted small"> <span class="aadharLabel">Fill Person Information With Aadhaar Details</span> (If You Do Not Have An Aadhaar Card, Visit
                                                 Registration Centre At Haridwar Or Rishikesh Or Vikash Nagar.)</p>
 
-                                            <div class="form-group mb-3">
-                                                <label class="form-label">Aadhaar Card Number : <span
+                                            <div class="form-group mb-3 d-flex align-items-center">
+                                                <label class="form-label aadharLabel">Aadhaar Card Number : <span
                                                         class="text-danger">*</span></label>
                                                 <input type="text" id="aadhaarNumber" class="form-control"
-                                                    placeholder="••••••••••••">
+                                                    placeholder="Enter Aadhaar Card Number" maxlength="12">
                                                 <input type="hidden" id="request_id" name="request_id">
                                                 <input type="hidden" id="tour_id" name="tour_id"
                                                     value="{{ $id }}">
@@ -73,8 +75,8 @@
                                             </div>
                                         </div>
                                         <!-- Pilgrim's Personal Details -->
-                                        <div class="section mb-4">
-                                            <div class="section-header d-flex justify-content-between align-items-center bg-light p-3"
+                                        <div class="section mb-2">
+                                            <div class="section-header d-flex justify-content-between align-items-center p-2"
                                                 id="section-header">
                                                 <h6 class="mb-0">Pilgrim's Personal Details</h6>
                                                 <i class="fas fa-chevron-up"></i>
@@ -207,8 +209,8 @@
                                         </div>
 
                                         <!-- Emergency Contact Details -->
-                                        <div class="section mb-4">
-                                            <div class="section-header d-flex justify-content-between align-items-center bg-light p-3"
+                                        <div class="section mb-2">
+                                            <div class="section-header d-flex justify-content-between align-items-center bg-light p-2"
                                                 id="section-header">
                                                 <h6 class="mb-0">Emergency Contact Details: (Who is not travelling
                                                     with you) <span class="text-danger">*</span></h6>
@@ -251,8 +253,8 @@
                                         </div>
 
                                         <!-- Medical Condition -->
-                                        <div class="section mb-4">
-                                            <div class="section-header d-flex justify-content-between align-items-center bg-light p-3"
+                                        <div class="section mb-2">
+                                            <div class="section-header d-flex justify-content-between align-items-center bg-light p-2"
                                                 id="section-header">
                                                 <h6 class="mb-0">Medical Condition <span
                                                         class="text-danger">*</span></h6>
@@ -311,8 +313,8 @@
                                         </div>
 
                                         <!-- Pilgrim Vehicle Details -->
-                                        <div class="section mb-4">
-                                            <div class="section-header d-flex justify-content-between align-items-center bg-light p-3"
+                                        <div class="section mb-2">
+                                            <div class="section-header d-flex justify-content-between align-items-center bg-light p-2"
                                                 id="section-header">
                                                 <h6 class="mb-0">Pilgrim Vehicle Details <span
                                                         class="text-danger">*</span></h6>
@@ -338,8 +340,8 @@
                                         </div>
 
                                         <!-- Upload Pilgrim's Details -->
-                                        <div class="section mb-4">
-                                            <div class="section-header d-flex justify-content-between align-items-center bg-light p-3"
+                                        <div class="section mb-2">
+                                            <div class="section-header d-flex justify-content-between align-items-center bg-light p-2"
                                                 id="section-header">
                                                 <h6 class="mb-0">Pilgrim's Photo Details <span
                                                         class="text-danger">*</span></h6>

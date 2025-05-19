@@ -290,7 +290,7 @@
 }
 
 .tour-registration-section .card-header {
-    background: #183557 !important;
+    background: #2B4078 !important;
     padding: 12px 20px;
     border-radius: 4px 4px 0 0;
     display: flex;
@@ -328,15 +328,15 @@
     border-radius: 4px;
 }
 .tour-section .section-header {
-    background-color: #b8d0f0;
+    background-color: #C1D6F2;
     border-radius: 4px;
     cursor: pointer;
 }
 
 .tour-section .section-header h6 {
-    font-size: 14px;
-    font-weight: 500;
-    color: #183557;
+    font-size: 12px;
+    font-weight: 700;
+    color: #606770;
 }
 
 .tour-section .section-content {
@@ -370,6 +370,31 @@
     border-radius: 4px;
     border-color: #ced4da;
     font-size: 14px;
+}
+#aadhaarNumber{
+    width: 300px;
+    margin-left: 10px;
+}
+.aadharLabel{
+    color: #777777 !important;
+    font-weight: 700 !important;
+}
+
+#requestOtpBtn{
+    width: 100px;
+    margin: auto;
+}
+.planPilgrim{
+    font-size: 14px;
+    color: #7D7D7D;
+}
+.tourDetail{
+    width: 100%;
+    background-color: #EEEEEE;
+    padding: 5px 10px;
+    font-size: 12px;
+    color: #7B7B7B;
+    border: 1px solid #D5D5D5;
 }
 
 .form-control::placeholder {
@@ -475,7 +500,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 .download-registration .card-header{
-    background: #183557 !important;
+    background: #2B4078 !important;
     /* padding: 12px 20px; */
     color: #fff !important;
 }
@@ -485,7 +510,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     color: #fff !important;
 }
 .tour-listing-section .card-header {
-    background: #183557 !important;
+    background: #2B4078 !important;
     padding: 12px 20px;
 }
 
@@ -545,7 +570,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 /* Pilgrim Registration Form Styles */
 .pilgrim-registration-section .card-header {
-    background: #183557 !important;
+    background: #2B4078 !important;
     padding: 12px 20px;
     border-radius: 4px 4px 0 0;
     display: flex;
@@ -558,7 +583,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .pilgrim-registration-section .section-header {
-    background-color: #b8d0f0 !important;
+    background-color: #C1D6F2 !important;
     border-radius: 4px;
     cursor: pointer;
 }
@@ -575,8 +600,9 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .pilgrim-registration-section .section-header h6 {
-    color: #183557;
-    font-weight: 500;
+    color: #606770;
+    font-size: 12px;
+    font-weight: 700;
 }
 
 .pilgrim-registration-section .form-label {
@@ -633,7 +659,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .section-header {
-    background-color: #b8d0f0 !important;
+    background-color: #C1D6F2 !important;
     border-radius: 4px;
 }
 
