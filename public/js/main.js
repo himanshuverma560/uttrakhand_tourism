@@ -435,11 +435,60 @@ if (resetPasswordForm) {
     });
 }
 
+// Fix iOS modal issues
+document.addEventListener('DOMContentLoaded', function() {
+    const paymentModals = document.querySelectorAll('.payment-modal');
+    if (paymentModals.length > 0) {
+        paymentModals.forEach(modal => {
+            // Fix scrolling issues
+            modal.addEventListener('show.bs.modal', function() {
+                // Save current scroll position
+                const scrollY = window.scrollY;
+                document.body.style.position = 'fixed';
+                document.body.style.width = '100%';
+                document.body.style.top = `-${scrollY}px`;
+            });
 
+            modal.addEventListener('hidden.bs.modal', function() {
+                // Restore scroll position
+                const scrollY = document.body.style.top;
+                document.body.style.position = '';
+                document.body.style.width = '';
+                document.body.style.top = '';
+                window.scrollTo(0, parseInt(scrollY || '0') * -1);
+            });
 
+            // Prevent zoom on input focus for iOS
+            const inputs = modal.querySelectorAll('input, select, textarea');
+            inputs.forEach(input => {
+                input.style.fontSize = '16px';
+                if (input.type === 'file') {
+                    // Handle file input separately
+                    input.addEventListener('change', function() {
+                        if (this.files && this.files[0]) {
+                            // Add visual feedback when file is selected
+                            this.classList.add('has-file');
+                        } else {
+                            this.classList.remove('has-file');
+                        }
+                    });
+                }
+            });
 
-
-
+            // Ensure backdrop covers full screen on iOS
+            const backdrop = document.querySelector('.modal-backdrop');
+            if (backdrop) {
+                backdrop.style.position = 'fixed';
+                backdrop.style.top = '0';
+                backdrop.style.left = '0';
+                backdrop.style.right = '0';
+                backdrop.style.bottom = '0';
+                backdrop.style.width = '100%';
+                backdrop.style.height = '100%';
+            }
+        });
+    }
+});
 
 // Handle navbar transparency on scroll
 const dashboardNav = document.querySelector('.dashboard-nav');

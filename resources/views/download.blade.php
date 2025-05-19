@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
-    @include('partials.user_head')
+@include('partials.user_head')
+
 <body>
     @include('partials.user_nav')
 
@@ -17,7 +18,7 @@
                     <div class="alert alert-success">
                         {{ session('success') }}
                     </div>
-                @endif
+                    @endif
                     <div class="row g-4">
                         <!-- Download Registration -->
                         <div class="col-12 download-registration">
@@ -36,11 +37,11 @@
                                             </div>
                                         </div> -->
                                     </div>
-                                    
+
                                     {{-- <a href="addPilgrim.html" class="btn btn-add-pilgrim me-4 mb-3">
                                         Add New Pilgrim/Tourist
                                     </a> --}}
-                                    
+
                                     <div class="table-responsive">
                                         <table class="table table-bordered">
                                             <thead>
@@ -55,7 +56,7 @@
                                             </thead>
                                             <tbody>
                                                 @foreach ($data as $value)
-                                            
+
                                                 <tr>
                                                     <td><a href="#" class="text-primary">{{$value->name}}</a></td>
                                                     <td>{{$value->mobile}}</td>
@@ -67,68 +68,42 @@
                                                                 <i class="fas fa-eye"></i>
                                                             </a>
                                                         </div>
-                                                    </td>   
+                                                    </td>
                                                     <td>
                                                         @if ($value->status == 1)
                                                         <button class="btn btn-danger download-pdf"
-                                                        data-regno="{{Auth::user()->unique_id}}"
-                                                        data-group-id="{{$value->tour_id}}"
-                                                        data-destination="{{$value->destinations}}"
-                                                        data-tour-days="{{$value->tour_days}}"
-                                                        data-selected-dates="{{$value->date_wise_destination}}"
-                                                        data-full-name="{{$value->name}}"
-                                                        data-gender="{{$value->gender}}"
-                                                        data-age="{{$value->age}}"
-                                                        data-diseases="NA"
-                                                        data-aadhar="{{$value->aadhar_card}}"
-                                                        data-email="{{$value->email}}"
-                                                        data-mobile="{{$value->mobile}}"
-                                                        data-address="{{$value->address}}"
-                                                        data-state="{{$value->state}}"
-                                                        data-photo-url="{{$value->profile_image_path}}"
-                                                        data-qr-url="https://example.com/qr.jpg",
-                                                        data-city="{{$value->city}}",
-                                                        data-country="{{$value->country}}",
-                                                        data-district="{{$value->district}}",
-                                                        data-contact-number="{{$value->contact_number}}",
-                                                        data-contact-person="{{$value->contact_person}}",
-                                                        data-contact-relation="{{$value->contact_relation}}",
-                                                        data-vehicle-details="{{$value->vehicle_details}}",
-                                                        data-drivers-name="{{$value->driver_name}}",
-                                                        data-vehicle-number="{{$value->vehicle_number}}">
-                                                        Download PDF</button>
+                                                            data-regno="{{Auth::user()->unique_id}}"
+                                                            data-group-id="{{$value->tour_id}}"
+                                                            data-destination="{{$value->destinations}}"
+                                                            data-tour-days="{{$value->tour_days}}"
+                                                            data-selected-dates="{{$value->date_wise_destination}}"
+                                                            data-full-name="{{$value->name}}"
+                                                            data-gender="{{$value->gender}}"
+                                                            data-age="{{$value->age}}"
+                                                            data-diseases="NA"
+                                                            data-aadhar="{{$value->aadhar_card}}"
+                                                            data-email="{{$value->email}}"
+                                                            data-mobile="{{$value->mobile}}"
+                                                            data-address="{{$value->address}}"
+                                                            data-state="{{$value->state}}"
+                                                            data-photo-url="{{$value->profile_image_path}}"
+                                                            data-qr-url="https://example.com/qr.jpg" ,
+                                                            data-city="{{$value->city}}" ,
+                                                            data-country="{{$value->country}}"
+                                                            data-district="{{$value->district}}"
+                                                            data-contact-number="{{$value->contact_number}}"
+                                                            data-contact-person="{{$value->contact_person}}"
+                                                            data-contact-relation="{{$value->contact_relation}}"
+                                                            data-vehicle-details="{{$value->vehicle_details}}"
+                                                            data-drivers-name="{{$value->driver_name}}"
+                                                            data-vehicle-number="{{$value->vehicle_number}}">
+                                                            Download PDF</button>
                                                         @endif
 
                                                         @if ($value->status == 0 && $payment->status == 1)
-                                                            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#qrModal{{ $qr->id }}">
-                                                                Payment
-                                                            </button>
-
-                                                            <div class="modal fade" id="qrModal{{ $qr->id }}" tabindex="-1" aria-labelledby="qrModalLabel{{ $qr->id }}" aria-hidden="true">
-                                                                <div class="modal-dialog modal-dialog-centered">
-                                                                    <div class="modal-content text-center">
-                                                                        <div class="modal-header">
-                                                                            <h5 class="modal-title" id="qrModalLabel{{ $qr->id }}">Payble Amount: {{$value->amount}}</h5>
-                                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                                        </div>
-                                                                        <div class="modal-body">
-                                                                            <h5>UPI ID: {{$qr->upi}}</h5>
-                                                                            <img src="{{ asset($qr->qr_image) }}" alt="{{ $qr->name }}" class="img-fluid" style="max-width: 250px;">
-                                                                            <form action="{{route('payment.store')}}" method="POST" enctype="multipart/form-data">
-                                                                                @csrf
-                                                                                <div class="form-check mb-3">
-                                                                                    <label for="qr_image" class="form-label">Upload Payment ScreenShort</label>
-                                                                                    <input type="file" name="qr_image" class="form-control" required>
-                                                                                    <input type="hidden" name="pilgrim_id" value="{{$value->id}}">
-                                                                                </div>
-                                                                            
-                                                                                <button type="submit" class="btn btn-info w-80">Upload</button>
-                                                                            </form>
-                                                    
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
+                                                        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#qrModal{{ $qr->id }}">
+                                                            Payment
+                                                        </button>
                                                         @endif
                                                     </td>
 
@@ -153,10 +128,35 @@
             </div>
         </div>
     </div>
-
-    
-    <script src="{{ asset('js/download.js') }}"></script>
-    <!-- Bootstrap JS -->
+    <!-- Payment QR Modal -->
+    <div class="modal fade payment-modal" id="qrModal{{ $qr->id }}" data-bs-backdrop="static" tabindex="-1" aria-labelledby="qrModalLabel{{ $qr->id }}" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="qrModalLabel{{ $qr->id }}">Payble Amount: {{$value->amount}}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body px-3 py-4">
+                    <h5>UPI ID: {{$qr->upi}}</h5>
+                    <div class="qr-image-wrapper my-3">
+                        <img src="{{ asset($qr->qr_image) }}" alt="{{ $qr->name }}" class="img-fluid" style="max-width: 200px;">
+                    </div>
+                    <form action="{{route('payment.store')}}" method="POST" enctype="multipart/form-data" class="mt-4">
+                        @csrf
+                        <div class="mb-3">
+                            <label for="qr_image" class="form-label">Upload Payment Screenshot</label>
+                            <input type="file" name="qr_image" class="form-control" accept="image/*" required>
+                            <input type="hidden" name="pilgrim_id" value="{{$value->id}}">
+                        </div>
+                        <button type="submit" class="btn btn-info w-100">Upload</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Bootstrap JS and dependencies -->
     @include('partials.user_footer')
+    <script src="{{ asset('js/download.js') }}"></script>
 </body>
+
 </html>
