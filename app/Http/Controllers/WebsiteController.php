@@ -187,6 +187,12 @@ class WebsiteController extends Controller
             $tour->destinations = end($destinations) ?? '';
             $tour->profile_image_path = $tour->profile_image_path ? asset($tour->profile_image_path) : '';
             $tour->amount = $amount;
+
+            $drivers = json_decode($tour->driver_name, true);
+            if (!empty($drivers)) {
+                $tour->driver_name = $drivers[0]['driver'];
+                $tour->vehicle_number = $drivers[0]['vehicle'];
+            }
         }
         $qr = Qr::first();
         $payment = Setting::where('id', 1)->first();
@@ -271,6 +277,16 @@ class WebsiteController extends Controller
             ];
         }
 
+        $drivers = [];
+        if ($request->drivers) {
+            foreach ($request->drivers as $index => $driver) {
+                $drivers[] = [
+                    'driver' => $driver,
+                    'vehicle' => $request->vehicle[$index] ?? null,
+                ];
+            }
+        }
+
         $tour->update([
             'start_date' => $startDate,
             'end_date' => $endDate,
@@ -278,8 +294,8 @@ class WebsiteController extends Controller
             'mode_of_travel' => $request->mode_of_travel,
             'type_of_transport' => $request->type_of_transport,
             'date_wise_destination' => json_encode($dateWiseDestination),
-            'driver_name' => $request->driver_name,
-            'vehicle_number' => $request->vehicle_number,
+            'driver_name' => json_encode($drivers),
+            'vehicle_number' => json_encode($drivers),
         ]);
 
         return redirect()->route('viewTour')->with('success', 'Tour updated successfully!');

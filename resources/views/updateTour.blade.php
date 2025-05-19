@@ -118,6 +118,68 @@
                                                                 {{ $tour->type_of_transport }}</option>
                                                         </select>
                                                     </div>
+
+                                                    <div class="row d-flex align-items-end">
+                                                        <div class="col-md-5 mb-3 vehicle-details" style="display: none;">
+                                                            <label class="form-label">Driver's Name<span
+                                                                    class="text-danger vehicle-required"
+                                                                    style="display: none;">*</span></label>
+                                                            <input type="text" class="form-control" id="driverName"
+                                                                placeholder="Enter Driver's Name">
+                                                        </div>
+                                                        <div class="col-md-5 mb-3 vehicle-details" style="display: none;">
+                                                            <label class="form-label">Vehicle Number<span
+                                                                    class="text-danger vehicle-required"
+                                                                    style="display: none;">*</span></label>
+                                                            <input type="text" class="form-control" id="vehicleNumber"
+                                                                placeholder="Enter Vehicle Number">
+                                                        </div>
+                                                        <div class="text-end vehicle-details col-md-2 mb-3"
+                                                            style="display: none;">
+                                                            <button type="button" class="btn btn-primary"
+                                                                id="addVehicle">
+                                                                <i class="fas fa-plus"></i> Add
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                    <!-- Vehicle Details Table -->
+                                                    <?php $drivers = json_decode($tour->driver_name, true);  ?>
+                                                    <div class="table-responsive mt-3" style="<?php if(empty($drivers)) echo "display: none"; ?>">
+                                                        <table class="table table-bordered" id="vehicleTable">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>Mode of Travel for Dham</th>
+                                                                    <th>Type of Transportation</th>
+                                                                    <th>Driver's Name</th>
+                                                                    <th>Vehicle Number</th>
+                                                                    <th>Action</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <?php
+                                                                  
+                                                                if (!empty($drivers)) {
+                                                                    foreach ($drivers as $index=>$driver)
+                                                                ?>
+                                                                <tr>
+                                                                    <td>{{$tour->mode_of_travel}}</td>
+                                                                    <td>{{$tour->type_of_transport}}</td>
+                                                                    <td>{{$driver['driver']}}<input type="hidden" name="drivers[]" value="{{$driver['driver']}}"></td>
+                                                                    <td>{{$driver['vehicle']}}<input type="hidden" name="vehicle[]" value="{{$driver['vehicle']}}"></td>
+                                                                    <td>
+                                                                        <button type="button" class="btn btn-sm btn-outline-primary edit-vehicle" data-index="{{$index}}">
+                                                                            <i class="fas fa-edit"></i>
+                                                                        </button>
+                                                                        <button type="button" class="btn btn-sm btn-outline-danger delete-vehicle" data-index="{{$index}}">
+                                                                            <i class="fas fa-trash"></i>
+                                                                        </button>
+                                                                    </td>
+                                                                </tr>
+                                                                <?php } ?>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+
                                                 </div>
                                             </div>
                                         </div>
@@ -192,6 +254,15 @@
             // Mode of Travel dependency
             const travelModeSelect = document.getElementById('travelMode');
             const transportationSelect = document.getElementById('transportationType');
+            const vehicleDetails = document.querySelectorAll('.vehicle-details');
+            const vehicleRequired = document.querySelectorAll('.vehicle-required');
+            const driverName = document.getElementById('driverName');
+            const vehicleNumber = document.getElementById('vehicleNumber');
+
+            // Initialize vehicles array to store all vehicles
+            let vehicles = [];
+            const vehicleTable = document.getElementById('vehicleTable');
+            const addVehicleBtn = document.getElementById('addVehicle');
 
             // Initialize transportation select as disabled
             // if (transportationSelect) {
@@ -202,6 +273,12 @@
                 // First clear and enable the transportation select
                 transportationSelect.innerHTML = '<option value="">Select</option>';
                 transportationSelect.disabled = false;
+
+                // Hide vehicle details by default
+                vehicleDetails.forEach(detail => detail.style.display = 'none');
+                vehicleRequired.forEach(req => req.style.display = 'none');
+                driverName.required = false;
+                vehicleNumber.required = false;
 
                 // Add options based on selected travel mode
                 switch (this.value) {
@@ -216,21 +293,109 @@
                             const optionElement = new Option(option, option);
                             transportationSelect.add(optionElement);
                         });
+                        vehicleDetails.forEach(detail => detail.style.display = 'block');
                         break;
 
                     case 'By Helicopter':
                         transportationSelect.add(new Option('Chartered Helicopter', 'Chartered Helicopter'));
+                        vehicleDetails.forEach(detail => detail.style.display = 'none');
                         break;
 
                     case 'By Walking':
                         transportationSelect.add(new Option('By Walking', 'By Walking'));
                         transportationSelect.value = 'By Walking';
-                        //transportationSelect.disabled = true;
+                        vehicleDetails.forEach(detail => detail.style.display = 'none');
                         break;
 
                     default:
                         transportationSelect.disabled = true;
+                        vehicleDetails.forEach(detail => detail.style.display = 'none');
                 }
+            });
+
+            // Function to update vehicles table
+            function updateVehiclesTable() {
+                const tbody = vehicleTable.querySelector('tbody');
+                const vehicleTableContainer = vehicleTable.closest('.table-responsive');
+                vehicleTableContainer.style.display = vehicles.length > 0 ? 'block' : 'none';
+                tbody.innerHTML = '';
+                vehicles.forEach((vehicle, index) => {
+                    const row = tbody.insertRow();
+                    row.innerHTML = `
+                        <td>${vehicle.mode}</td>
+                        <td>${vehicle.type}</td>
+                        <td>${vehicle.driverName}<input type="hidden" name="drivers[]" value="${vehicle.driverName}"></td>
+                        <td>${vehicle.vehicleNumber}<input type="hidden" name="vehicle[]" value="${vehicle.vehicleNumber}"></td>
+                        <td>
+                            <button type="button" class="btn btn-sm btn-outline-primary edit-vehicle" data-index="${index}">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-danger delete-vehicle" data-index="${index}">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    `;
+                });
+
+                // Add event listeners for edit and delete buttons
+                tbody.querySelectorAll('.edit-vehicle').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const index = this.dataset.index;
+                        const vehicle = vehicles[index];
+                        travelModeSelect.value = vehicle.mode;
+                        travelModeSelect.dispatchEvent(new Event('change'));
+                        transportationSelect.value = vehicle.type;
+                        driverName.value = vehicle.driverName;
+                        vehicleNumber.value = vehicle.vehicleNumber;
+                        vehicles.splice(index, 1);
+                        updateVehiclesTable();
+                    });
+                });
+
+                tbody.querySelectorAll('.delete-vehicle').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const index = this.dataset.index;
+                        vehicles.splice(index, 1);
+                        updateVehiclesTable();
+                    });
+                });
+            }
+
+            // Add event listener for transportation type
+            transportationSelect.addEventListener('change', function() {
+                const requireFields = ['Private Car', 'Two-wheeler'].includes(this.value);
+                vehicleRequired.forEach(req => {
+                    req.style.display = requireFields ? 'inline' : 'none';
+                });
+            });
+
+            // Add event listener for Add Vehicle button
+            addVehicleBtn.addEventListener('click', function() {
+                const mode = travelModeSelect.value;
+                const type = transportationSelect.value;
+                const driver = driverName.value;
+                const vehNumber = vehicleNumber.value;
+
+                // Validate inputs
+                if (!mode || !type || (type !== 'By Walking' && (!driver || !vehNumber))) {
+                    alert('Please fill all required fields');
+                    return;
+                }
+
+                // Add vehicle to array
+                vehicles.push({
+                    mode: mode,
+                    type: type,
+                    driverName: driver,
+                    vehicleNumber: vehNumber
+                });
+
+                // Update table
+                updateVehiclesTable();
+
+                // Clear inputs
+                driverName.value = '';
+                vehicleNumber.value = '';
             });
 
 

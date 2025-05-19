@@ -80,6 +80,13 @@ class AdminController extends Controller
             $tour->tour_days = "$startDate - $endDate";
             $tour->destinations = end($destinations) ?? '';
             $tour->profile_image_path = $tour->profile_image_path ? asset($tour->profile_image_path) : '';
+
+            // for vehicle and driver
+            $drivers = json_decode($tour->driver_name, true);
+            if (!empty($drivers)) {
+                $tour->driver_name = $drivers[0]['driver'];
+                $tour->vehicle_number = $drivers[0]['vehicle'];
+            }
         }
 
         return view('admin.dashboard', compact('tours'));
