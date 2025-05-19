@@ -114,11 +114,12 @@
                                                                         <div class="modal-body">
                                                                             <h5>UPI ID: {{$qr->upi}}</h5>
                                                                             <img src="{{ asset($qr->qr_image) }}" alt="{{ $qr->name }}" class="img-fluid" style="max-width: 250px;">
-                                                                            <form action="{{route('qr.store')}}" method="POST" enctype="multipart/form-data">
+                                                                            <form action="{{route('payment.store')}}" method="POST" enctype="multipart/form-data">
                                                                                 @csrf
                                                                                 <div class="form-check mb-3">
                                                                                     <label for="qr_image" class="form-label">Upload Payment ScreenShort</label>
                                                                                     <input type="file" name="qr_image" class="form-control" required>
+                                                                                    <input type="hidden" name="pilgrim_id" value="{{$value->id}}">
                                                                                 </div>
                                                                             
                                                                                 <button type="submit" class="btn btn-info w-80">Upload</button>

@@ -13,6 +13,7 @@ use App\Models\Tour;
 use App\Models\Pilgrim;
 use Illuminate\Support\Facades\Storage;
 use App\Models\DhamPayment;
+use App\Models\Payment;
 
 class WebsiteController extends Controller
 {
@@ -343,6 +344,37 @@ class WebsiteController extends Controller
 
         return redirect()->route('download')->with('success', 'Pilgrim updated successfully!');
 
+    }
+
+
+    public function paymentStore(Request $request)
+    {
+        $request->validate([
+            'pilgrim_id' => 'required|max:255',
+            'qr_image' => 'required|image|mimes:png,jpg,jpeg|max:2048',
+        ]);
+        
+
+        $file = $request->file('qr_image');
+        $fileName = time() . '_' . $file->getClientOriginalName();
+        $destinationPath = public_path('payment');
+
+        // Create folder if not exists
+         if (!file_exists($destinationPath)) {
+             mkdir($destinationPath, 0755, true);
+         }
+
+        // Move file to public/qr
+        $file->move($destinationPath, $fileName);
+
+        // Save to DB
+        Payment::updateOrCreate( ['pilgrim_id' => $request->pilgrim_id, 'user_id' => auth()->id()],[
+            'pilgrim_id' => $request->pilgrim_id,
+            'image' => 'payment/' . $fileName,
+            'user_id' => auth()->id()
+        ]);
+
+        return back()->with('success', 'Screenshort uploaded successfully.');
     }
 
 

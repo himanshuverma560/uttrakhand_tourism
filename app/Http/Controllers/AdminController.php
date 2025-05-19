@@ -15,6 +15,7 @@ class AdminController extends Controller
     {
         $query = \DB::table('users')
             ->leftJoin('add_pilgrims', 'users.id', '=', 'add_pilgrims.user_id')
+            ->leftJoin('payments', 'add_pilgrims.id', '=', 'payments.pilgrim_id')
             ->leftJoin('tours', 'add_pilgrims.tour_id', '=', 'tours.id')
             ->leftJoin('aadhaar_verifications', 'aadhaar_verifications.aadhaar_number', '=', 'add_pilgrims.aadhar_card')
             ->select(
@@ -42,7 +43,8 @@ class AdminController extends Controller
                 'add_pilgrims.aadhar_card',
                 'add_pilgrims.address',
                 'add_pilgrims.vehicle_details',
-                'aadhaar_verifications.profile_image_path'
+                'aadhaar_verifications.profile_image_path',
+                'payments.image'
             )
             ->orderBy('users.id', 'desc');
 

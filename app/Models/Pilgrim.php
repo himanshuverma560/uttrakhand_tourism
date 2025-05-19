@@ -49,6 +49,11 @@ class Pilgrim extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function payment()
+    {
+        return $this->belongsTo(Payment::class);
+    }
+
     public function getProfileImageUrl()
     {
         // Assuming `profile_image_path` is stored in the `AadhaarVerification` model

@@ -83,6 +83,9 @@
                                         data-vehicle-number="{{ $tour->vehicle_number }}">
                                         Download PDF</button>
                                 @endif
+                                @if ($tour->image)
+                                    <a href="{{asset($tour->image)}}" target="_blank" class="btn btn-block btn-sm">Payment</a>
+                                @endif
                             </td>
 
                         </tr>

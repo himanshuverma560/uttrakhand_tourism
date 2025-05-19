@@ -35,6 +35,7 @@ Route::prefix('user')->middleware(['auth'])->group(function () {
     Route::post('create/tour', [WebsiteController::class, 'storeTour'])->name('store.tour');
     Route::get('/tour/edit/{id}', [WebsiteController::class, 'editTour'])->name('tour.edit');
     Route::post('/tour/update/{id}', [WebsiteController::class, 'updateTour'])->name('tour.update');
+    Route::post('payment-store', [WebsiteController::class, 'paymentStore'])->name('payment.store');
     Route::get('logout', [UserAuthController::class, 'logout'])->name('logout');
 
     //aadhar card
