@@ -78,7 +78,7 @@ document.querySelectorAll('.download-pdf').forEach(button => {
         // Add QR Code
         const qrCodeSize = 40;
         const qrX = doc.internal.pageSize.width - 60;
-        const qrY = 40;
+        const qrY = 30;
 
         // Create temporary container for QR code
         const qrContainer = document.createElement("div");
@@ -95,7 +95,7 @@ document.querySelectorAll('.download-pdf').forEach(button => {
         // Add QR code to PDF
         doc.addImage(qrCodeDataUrl, 'JPEG', qrX, qrY, qrCodeSize, qrCodeSize);
         doc.setFontSize(8);
-        doc.text('Scan for Aadhar', qrX + qrCodeSize / 2, qrY + qrCodeSize + 5, { align: 'center' });
+        doc.text('Scan for Aadhar', qrX + qrCodeSize / 2, qrY + qrCodeSize + 3, { align: 'center' });
 
 
 
@@ -113,7 +113,6 @@ document.querySelectorAll('.download-pdf').forEach(button => {
             doc.line(90, y - 5, 90, y + lineHeight); // Vertical line between label and value
             doc.text(label, 25, y);
             doc.text(splitValue, 95, y);
-
         };
 
         let currentY = startY;
@@ -130,7 +129,7 @@ document.querySelectorAll('.download-pdf').forEach(button => {
         addRow('Tour Days', pilgrimData.tourDays, currentY);
         currentY += lineHeight;
 
-        addRow('Selected Dham Destination Date', pilgrimData.selectedDates, currentY);
+        addRow('Destination Date', pilgrimData.selectedDates, currentY);
         currentY += lineHeight;
 
         addRow('Full Name', pilgrimData.fullName, currentY);
@@ -156,9 +155,19 @@ document.querySelectorAll('.download-pdf').forEach(button => {
 
         addRow('Country', pilgrimData.country, currentY);
         currentY += lineHeight;
-
-        addRow('Address', pilgrimData.address, currentY);
-        currentY += lineHeight+10;
+        
+        // Make address row taller with only vertical lines
+        const addressHeight = lineHeight * 2; // Double the normal height
+        // Draw only the vertical lines for borders
+        doc.line(20, currentY - 5, 20, currentY + addressHeight + 4); // Left border
+        doc.line(90, currentY - 5, 90, currentY + addressHeight + 4); // Middle divider
+        doc.line(190, currentY - 5, 190, currentY + addressHeight + 4); // Right border
+        
+        // Add text
+        doc.text('Address', 25, currentY);
+        const splitAddress = doc.splitTextToSize(pilgrimData.address, 90);
+        doc.text(splitAddress, 95, currentY);
+        currentY += addressHeight;
 
         addRow('City', pilgrimData.city, currentY);
         currentY += lineHeight;
