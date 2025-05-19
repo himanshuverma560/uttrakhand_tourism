@@ -117,9 +117,9 @@ class WebsiteController extends Controller
     {
         $payments = DhamPayment::all();
         $query = \DB::table('users')
-            ->leftJoin('add_pilgrims', 'users.id', '=', 'add_pilgrims.user_id')
-            ->leftJoin('tours', 'add_pilgrims.tour_id', '=', 'tours.id')
-            ->leftJoin('aadhaar_verifications', 'aadhaar_verifications.aadhaar_number', '=', 'add_pilgrims.aadhar_card')
+            ->join('add_pilgrims', 'users.id', '=', 'add_pilgrims.user_id')
+            ->join('tours', 'add_pilgrims.tour_id', '=', 'tours.id')
+            ->join('aadhaar_verifications', 'aadhaar_verifications.aadhaar_number', '=', 'add_pilgrims.aadhar_card')
             ->select(
                 'users.name',
                 'users.email',
