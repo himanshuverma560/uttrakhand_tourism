@@ -14,18 +14,14 @@
 
                 <!-- Main Dashboard Area -->
                 <div class="col-md-9">
-                    @if (session('success'))
-                    <div class="alert alert-success">
-                        {{ session('success') }}
-                    </div>
-                    @endif
+
                     <div class="row g-4">
                         <!-- Registration for Tour -->
                         <div class="tour-registration-section">
                             <div class="card">
                                 <div
                                     class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-                                    <h5 class="mb-0">Plan Your Tour</h5>
+                                    <h5 class="mb-0">Plan Your Tour </h5>
                                     <div class="language-select">
                                         <select class="form-select form-select-sm">
                                             <option selected>English</option>
@@ -51,18 +47,18 @@
                                                     <div class="col-md-4 mb-3">
                                                         <label class="form-label">Tour Start Date<span
                                                                 class="text-danger">*</span></label>
-                                                        <input type="date" name="start_date" id="tourStartDate" class="form-control"
-                                                            placeholder="Please Select Tour Date" required
-                                                            min="{{ date('Y-m-d') }}"
+                                                        <input type="date" name="start_date" id="tourStartDate"
+                                                            class="form-control" placeholder="Please Select Tour Date"
+                                                            required min="{{ date('Y-m-d') }}"
                                                             onchange="updateEndDateMin(); checkFormFields();">
                                                     </div>
 
                                                     <div class="col-md-4 mb-3">
                                                         <label class="form-label">Tour End Date<span
                                                                 class="text-danger">*</span></label>
-                                                        <input type="date" name="end_date" id="tourEndDate" class="form-control"
-                                                            placeholder="Please Select Tour Date" required
-                                                            min="{{ date('Y-m-d') }}"
+                                                        <input type="date" name="end_date" id="tourEndDate"
+                                                            class="form-control" placeholder="Please Select Tour Date"
+                                                            required min="{{ date('Y-m-d') }}"
                                                             onchange="checkFormFields();">
                                                     </div>
 
@@ -76,7 +72,8 @@
                                                 </div>
                                                 <div class="row mb-3">
                                                     <div class="col-12">
-                                                        <button type="button" class="btn btn-primary" id="checkAvailability" style="display: none;">
+                                                        <button type="button" class="btn btn-primary"
+                                                            id="checkAvailability" style="display: none;">
                                                             <i class="fas fa-calendar-check"></i> Check Availability
                                                         </button>
                                                     </div>
@@ -120,15 +117,23 @@
 
                                                 <div class="row d-flex align-items-end">
                                                     <div class="col-md-5 mb-3 vehicle-details" style="display: none;">
-                                                        <label class="form-label">Driver's Name<span class="text-danger vehicle-required" style="display: none;">*</span></label>
-                                                        <input type="text" class="form-control" id="driverName" placeholder="Enter Driver's Name">
+                                                        <label class="form-label">Driver's Name<span
+                                                                class="text-danger vehicle-required"
+                                                                style="display: none;">*</span></label>
+                                                        <input type="text" class="form-control" id="driverName"
+                                                            placeholder="Enter Driver's Name">
                                                     </div>
                                                     <div class="col-md-5 mb-3 vehicle-details" style="display: none;">
-                                                        <label class="form-label">Vehicle Number<span class="text-danger vehicle-required" style="display: none;">*</span></label>
-                                                        <input type="text" class="form-control" id="vehicleNumber" placeholder="Enter Vehicle Number">
+                                                        <label class="form-label">Vehicle Number<span
+                                                                class="text-danger vehicle-required"
+                                                                style="display: none;">*</span></label>
+                                                        <input type="text" class="form-control" id="vehicleNumber"
+                                                            placeholder="Enter Vehicle Number">
                                                     </div>
-                                                    <div class="text-end vehicle-details col-md-2 mb-3" style="display: none;">
-                                                        <button type="button" class="btn btn-primary" id="addVehicle">
+                                                    <div class="text-end vehicle-details col-md-2 mb-3"
+                                                        style="display: none;">
+                                                        <button type="button" class="btn btn-primary"
+                                                            id="addVehicle">
                                                             <i class="fas fa-plus"></i> Add
                                                         </button>
                                                     </div>
@@ -211,7 +216,8 @@
     </div>
 
     <!-- Availability Modal -->
-    <div class="modal fade" id="availabilityModal" tabindex="-1" aria-labelledby="availabilityModalLabel" aria-hidden="true">
+    <div class="modal fade" id="availabilityModal" tabindex="-1" aria-labelledby="availabilityModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header bg-light">
@@ -222,8 +228,10 @@
                     <div class="d-flex align-items-center justify-content-between mb-2">
                         <h4 class="mb-0 me-3" id="currentMonthDisplay"></h4>
                         <div>
-                            <button class="btn btn-sm btn-outline-secondary me-2" id="prevMonth"><i class="fas fa-chevron-left"></i></button>
-                            <button class="btn btn-sm btn-outline-secondary" id="nextMonth"><i class="fas fa-chevron-right"></i></button>
+                            <button class="btn btn-sm btn-outline-secondary me-2" id="prevMonth"><i
+                                    class="fas fa-chevron-left"></i></button>
+                            <button class="btn btn-sm btn-outline-secondary" id="nextMonth"><i
+                                    class="fas fa-chevron-right"></i></button>
                         </div>
                     </div>
                     <div id="availabilityGrid" class="row g-3">
@@ -233,6 +241,9 @@
             </div>
         </div>
     </div>
+
+    
+
 
     <script>
         const tourForm = document.getElementById('tourRegistrationForm');
@@ -308,8 +319,8 @@
                     row.innerHTML = `
                         <td>${vehicle.mode}</td>
                         <td>${vehicle.type}</td>
-                        <td>${vehicle.driverName}</td>
-                        <td>${vehicle.vehicleNumber}</td>
+                        <td>${vehicle.driverName}<input type="hidden" name="drivers[]" value="${vehicle.driverName}"></td>
+                        <td>${vehicle.vehicleNumber}<input type="hidden" name="vehicle[]" value="${vehicle.vehicleNumber}"></td>
                         <td>
                             <button type="button" class="btn btn-sm btn-outline-primary edit-vehicle" data-index="${index}">
                                 <i class="fas fa-edit"></i>
@@ -562,7 +573,9 @@
         // Availability Calendar functionality
         let currentYear = new Date().getFullYear();
         let currentMonth = new Date().getMonth();
-        const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September",
+            "October", "November", "December"
+        ];
 
         function generateMonthCard(date, month, year) {
 
@@ -791,5 +804,12 @@
 
     @include('partials.user_footer')
 </body>
-
+@if (request('success') && request('tour_id'))
+        <script>
+            window.onload = function() {
+                alert("{{ addslashes(request('success')) }}");
+                window.location.href = "{{ route('addPligrim', ['id' => request('tour_id')]) }}";
+            };
+        </script>
+    @endif
 </html>

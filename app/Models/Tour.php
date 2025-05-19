@@ -47,5 +47,23 @@ class Tour extends Model
         return $this->end_date ? $this->end_date->format('Y-m-d') : null;
     }
 
+    public function getDriverDetailsArray(): array
+    {
+        $drivers = json_decode($this->driver_name, true);
+        $transport = $this->type_of_transport; // capture the value
+
+        if (!is_array($drivers)) {
+            return [];
+        }
+
+        return array_map(function ($entry) use ($transport) {
+            $driver = $entry['driver'] ?? '';
+            $vehicle = $entry['vehicle'] ?? '';
+            return "{$transport} - {$driver} - ({$vehicle})";
+        }, $drivers);
+    }
+
+
+
 
 }

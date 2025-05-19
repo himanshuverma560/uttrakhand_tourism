@@ -102,7 +102,8 @@ class WebsiteController extends Controller
 
     public function addPligrim($id)
     {
-        return view('add_pilgrim', compact('id'));
+        $data = Tour::find($id);
+        return view('add_pilgrim', compact('id', 'data'));
     }
 
     public function editPligrim($id)
@@ -169,7 +170,7 @@ class WebsiteController extends Controller
                 }
 
             }
-            
+
             $amount = 0;
             foreach ($destinations as $destination) {
                 foreach ($payments as $payment) {
@@ -178,7 +179,7 @@ class WebsiteController extends Controller
                     }
                 }
             }
-            
+
             $startDate = $tour_days[0] ?? '';
             $endDate = end($tour_days) ?: '';
             $tour->date_wise_destination = $date_wise_destination ?? '';
@@ -207,6 +208,17 @@ class WebsiteController extends Controller
             ];
         }
 
+        $drivers = [];
+        if ($request->drivers) {
+            foreach ($request->drivers as $index => $driver) {
+                $drivers[] = [
+                    'driver' => $driver,
+                    'vehicle' => $request->vehicle[$index] ?? null,
+                ];
+            }
+        }
+        
+
         do {
             $uniqueNumber = str_pad(mt_rand(1, 99999999), 8, '0', STR_PAD_LEFT);
             //$tourId = 'UK-' . $uniqueNumber;
@@ -216,7 +228,7 @@ class WebsiteController extends Controller
 
 
         // Store in the database
-        Tour::create([
+        $data = Tour::create([
             'user_id' => auth()->id(),
             'start_date' => date('Y-m-d', strtotime($startDate)),
             'end_date' => date('Y-m-d', strtotime($endDate)),
@@ -224,13 +236,16 @@ class WebsiteController extends Controller
             'mode_of_travel' => $request->mode_of_travel,
             'type_of_transport' => $request->type_of_transport,
             'date_wise_destination' => json_encode($destinations),
-            'driver_name' => $request->driver_name,
-            'vehicle_number' => $request->vehicle_number,
+            'driver_name' => json_encode($drivers),
+            'vehicle_number' => json_encode($drivers),
             'status' => 0,
             'tour_id' => $tourId
         ]);
 
-        return redirect()->route('viewTour')->with('success', 'Tour registration successful!');
+        return redirect()->route('tour', [
+            'success' => 'Tour created successfully.'. $tourId,
+            'tour_id' => $data->id
+        ]);
     }
 
 

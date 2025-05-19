@@ -28,9 +28,13 @@
                                         <!-- Aadhaar Verification Section -->
                                         <div class="aadhaar-section">
                                             <!-- <h5 class="mb-3">Fill Person Information With Aadhaar Details</h5> -->
-                                             <p class="planPilgrim">Plan Your Destination &nbsp;&nbsp;&nbsp;&nbsp;<b>[Selected Tour Name: Tour_04052025.1]</b><!--Tour Data--></p>
-                                             <p class="tourDetail">Kedarnath</p>
-                                            <p class="text-muted small"> <span class="aadharLabel">Fill Person Information With Aadhaar Details</span> (If You Do Not Have An Aadhaar Card, Visit
+                                            <p class="planPilgrim">Plan Your Destination
+                                                &nbsp;&nbsp;&nbsp;&nbsp;<b>[Selected Tour Name:
+                                                    Tour_{{ $data->tour_id }}]</b><!--Tour Data--></p>
+                                            <p class="tourDetail">Kedarnath</p>
+                                            <p class="text-muted small"> <span class="aadharLabel">Fill Person
+                                                    Information With Aadhaar Details</span> (If You Do Not Have An
+                                                Aadhaar Card, Visit
                                                 Registration Centre At Haridwar Or Rishikesh Or Vikash Nagar.)</p>
 
                                             <div class="form-group mb-3 d-flex align-items-center">
@@ -326,14 +330,16 @@
                                                         <span class="text-danger">*</span></label>
                                                     <select class="form-select" required name="vehicle_details">
                                                         <option value="">Select vehicle</option>
-                                                        <option value="taxi1">Taxi/Maxi - 1 (1/8)</option>
-                                                        <option value="taxi2">Taxi/Maxi - 2 (2/8)</option>
-                                                        <option value="taxi3">Taxi/Maxi - 3 (3/8)</option>
-                                                        <option value="taxi4">Taxi/Maxi - 4 (4/8)</option>
-                                                        <option value="taxi5">Taxi/Maxi - 5 (5/8)</option>
-                                                        <option value="taxi6">Taxi/Maxi - 6 (6/8)</option>
-                                                        <option value="taxi7">Taxi/Maxi - 7 (7/8)</option>
-                                                        <option value="taxi8">Taxi/Maxi - 8 (8/8)</option>
+                                                        <?php
+                                                        $driver = $data->getDriverDetailsArray();
+                                                        
+                                                        if (!empty($driver)) {
+                                                            foreach ($driver as $d) {
+                                                                echo '<option value='.htmlspecialchars($d).'>' . htmlspecialchars($d) . '</option>';
+                                                            }
+                                                        }
+                                                        ?>
+
                                                     </select>
                                                 </div>
                                             </div>
@@ -483,7 +489,11 @@
                     document.getElementById('age').value = res.data.age;
                     $('input[name="gender"][value="' + res.data.gender + '"]').prop('checked', true);
                     document.getElementById('address').value = res.data.formatted_address;
-                    document.getElementById('city').value = res.data.street;
+                    if (res.data.street && res.data.street.trim() !== '') {
+                        document.getElementById('city').value = res.data.street;
+                    } else {
+                        document.getElementById('city').value = res.data.district;
+                    }
                     document.getElementById('district').value = res.data.district;
                     document.getElementById('state').value = res.data.state;
 
@@ -530,7 +540,7 @@
 
             });
         }
-        collapsAll('none')
+     //   collapsAll('none')
     </script>
     @include('partials.user_footer')
 </body>
