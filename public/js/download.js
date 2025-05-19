@@ -58,11 +58,11 @@ document.querySelectorAll('.download-pdf').forEach(button => {
                 });
 
                 // Add the photo to the PDF
-                doc.addImage(imageData, 'JPEG', 20, 40, 40, 40); // x, y, width, height
+                doc.addImage(imageData, 'JPEG', 20, 30, 40, 40); // x, y, width, height
             } catch (error) {
                 console.error('Error loading image:', error);
                 // If error loading photo, draw empty rectangle as placeholder
-                doc.rect(20, 40, 40, 40);
+                doc.rect(20, 30, 40, 40);
                 doc.setFontSize(8);
                 doc.text('Error loading photo', 40, 85, { align: 'center' });
             }
