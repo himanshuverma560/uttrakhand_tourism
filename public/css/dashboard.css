@@ -754,7 +754,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 .table th {
     background-color: #37517e;
-    color: white;
+    color: #000;
     vertical-align: middle;
 }
 

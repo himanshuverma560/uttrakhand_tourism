@@ -216,7 +216,7 @@
     </div>
 
     <!-- Availability Modal -->
-    <div class="modal fade" id="availabilityModal" tabindex="-1" aria-labelledby="availabilityModalLabel"
+    <div class="modal fade availabilityModal" id="availabilityModal" tabindex="-1" aria-labelledby="availabilityModalLabel"
         aria-hidden="true">
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
@@ -582,6 +582,11 @@
             const box = document.createElement('div');
             box.className = 'col-lg-2 col-md-6 mb-3';
 
+            // Check if date is before today
+            const currentDate = new Date();
+            const cardDate = new Date(year, month, date);
+            const isPastDate = cardDate < new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate());
+            const bgColor = isPastDate ? '#ff6b6b' : '#9ed7ab';
 
             box.innerHTML = `
                     <div class="date-card">
@@ -591,19 +596,19 @@
                         <div class="date-body">
                             <div class="d-flex flex-wrap align-items-center">
                                 <div class="slot-item">
-                                    <div class="dham-name">Yamunotri</div>
+                                    <div class="dham-name" style="background-color: ${bgColor};">Yamunotri</div>
                                 </div>
                                 <div class="slot-item">
-                                    <div class="dham-name">Gangotri</div>
+                                    <div class="dham-name" style="background-color: ${bgColor};">Gangotri</div>
                                 </div>
                                 <div class="slot-item">
-                                    <div class="dham-name">Kedarnath</div>
+                                    <div class="dham-name" style="background-color: ${bgColor};">Kedarnath</div>
                                 </div>
                                 <div class="slot-item">
-                                    <div class="dham-name">Badrinath</div>
+                                    <div class="dham-name" style="background-color: ${bgColor};">Badrinath</div>
                                 </div>
                                 <div class="slot-item">
-                                    <div class="dham-name">Hemkund Sahib</div>
+                                    <div class="dham-name" style="background-color: ${bgColor};">Hemkund Sahib</div>
                                 </div>
                             </div>
                         </div>
@@ -726,10 +731,11 @@
         }
 
         .modal-dialog {
-            margin-top: 4%;
             width: 75%;
-            height: 85%;
+            min-height: 5%;
             overflow-y: scroll;
+            margin: auto;
+            margin-top: 4%;
         }
 
         .slot-grid {
@@ -776,7 +782,7 @@
         }
 
         #availabilityModal .modal-dialog {
-            max-width: 90%;
+            max-width: 80%;
         }
 
         .badge {
