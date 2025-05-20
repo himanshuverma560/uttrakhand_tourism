@@ -68,7 +68,7 @@ class WebsiteController extends Controller
         ]);
 
         do {
-            $uniqueNumber = str_pad(mt_rand(1000000000, 9999999999), 10, '0', STR_PAD_LEFT);  // Generate a 10-digit number
+            $uniqueNumber = (string) mt_rand(1000000000, 9999999999);
         } while (User::where('unique_id', $uniqueNumber)->exists());
 
         $user->unique_id = $uniqueNumber;
@@ -226,7 +226,7 @@ class WebsiteController extends Controller
                 ];
             }
         }
-        
+
 
         do {
             $uniqueNumber = str_pad(mt_rand(1, 99999999), 8, '0', STR_PAD_LEFT);
@@ -252,7 +252,7 @@ class WebsiteController extends Controller
         ]);
 
         return redirect()->route('tour', [
-            'success' => 'Tour created successfully.'. $tourId,
+            'success' => 'Tour created successfully.' . $tourId,
             'tour_id' => $data->id
         ]);
     }
@@ -353,22 +353,22 @@ class WebsiteController extends Controller
             'pilgrim_id' => 'required|max:255',
             'qr_image' => 'required|image|mimes:png,jpg,jpeg|max:2048',
         ]);
-        
+
 
         $file = $request->file('qr_image');
         $fileName = time() . '_' . $file->getClientOriginalName();
         $destinationPath = public_path('payment');
 
         // Create folder if not exists
-         if (!file_exists($destinationPath)) {
-             mkdir($destinationPath, 0755, true);
-         }
+        if (!file_exists($destinationPath)) {
+            mkdir($destinationPath, 0755, true);
+        }
 
         // Move file to public/qr
         $file->move($destinationPath, $fileName);
 
         // Save to DB
-        Payment::updateOrCreate( ['pilgrim_id' => $request->pilgrim_id, 'user_id' => auth()->id()],[
+        Payment::updateOrCreate(['pilgrim_id' => $request->pilgrim_id, 'user_id' => auth()->id()], [
             'pilgrim_id' => $request->pilgrim_id,
             'image' => 'payment/' . $fileName,
             'user_id' => auth()->id()
