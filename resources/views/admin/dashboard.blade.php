@@ -64,24 +64,7 @@
                                 @endif
                                 @if (isset($tour->status) && $tour->status == 1)
                                     <span class="badge bg-success">Verified</span>
-                                    <button class="btn btn-warning btn-sm download-pdf" data-regno="{{ $tour->unique_id }}"
-                                        data-group-id="{{ $tour->tour_id }}"
-                                        data-destination="{{ $tour->destinations }}" data-tour-days="{{$tour->tour_days}}"
-                                        data-selected-dates="{{ $tour->date_wise_destination }}"
-                                        data-full-name="{{ $tour->name }}" data-gender="{{ $tour->gender }}"
-                                        data-age="{{ $tour->age }}" data-diseases="NA"
-                                        data-aadhar="{{ $tour->aadhar_card }}" data-email="{{ $tour->email }}"
-                                        data-mobile="{{ $tour->mobile }}" data-address="{{ $tour->address }}"
-                                        data-state="{{ $tour->state }}" data-photo-url="{{$tour->profile_image_path}}"
-                                        data-qr-url="{{$tour->profile_image_path}}", data-city="{{ $tour->city }}",
-                                        data-country="{{ $tour->country }}", data-district="{{ $tour->district }}",
-                                        data-contact-number="{{ $tour->contact_number }}",
-                                        data-contact-person="{{ $tour->contact_person }}",
-                                        data-contact-relation="{{ $tour->contact_relation }}",
-                                        data-vehicle-details="{{ $tour->vehicle_details }}",
-                                        data-drivers-name="{{ $tour->driver_name }}",
-                                        data-vehicle-number="{{ $tour->vehicle_number }}">
-                                        Download PDF</button>
+                                    <a href={{route('download-pdf', ['id' => $tour->id])}} class="btn btn-warning btn-sm">Download PDF</a>
                                 @endif
                                 @if ($tour->image)
                                     <a href="{{asset($tour->image)}}" target="_blank" class="btn btn-block btn-sm">Payment</a>

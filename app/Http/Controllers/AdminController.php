@@ -10,6 +10,10 @@ use App\Models\User;
 use App\Models\Dham;
 use App\Models\DhamPayment;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Endroid\QrCode\Builder\Builder;
+use Endroid\QrCode\Writer\PngWriter;
+
+
 class AdminController extends Controller
 {
     public function dashboard(Request $request)
@@ -223,19 +227,98 @@ class AdminController extends Controller
     }
 
 
-    public function downloadPdf(Request $request)
+    public function downloadPdf($id)
     {
-        // Example dynamic data (pass actual data if needed)
-        $data = [
-            'name' => 'Tadhani Sohil Babubhai',
-            'registration_no' => '594595249078',
-            // Add more fields as needed
-        ];
+        $tour = \DB::table('users')
+            ->leftJoin('add_pilgrims', 'users.id', '=', 'add_pilgrims.user_id')
+            ->leftJoin('payments', 'add_pilgrims.id', '=', 'payments.pilgrim_id')
+            ->leftJoin('tours', 'add_pilgrims.tour_id', '=', 'tours.id')
+            ->leftJoin('aadhaar_verifications', 'aadhaar_verifications.aadhaar_number', '=', 'add_pilgrims.aadhar_card')
+            ->select(
+                'users.name',
+                'users.email',
+                'users.unique_id',
+                'users.mobile',
+                'tours.start_date',
+                'tours.end_date',
+                'tours.tour_id',
+                'tours.driver_name',
+                'tours.vehicle_number',
+                'tours.date_wise_destination',
+                'add_pilgrims.status',
+                'add_pilgrims.id',
+                'add_pilgrims.gender',
+                'add_pilgrims.age',
+                'add_pilgrims.city',
+                'add_pilgrims.state',
+                'add_pilgrims.country',
+                'add_pilgrims.district',
+                'add_pilgrims.contact_person',
+                'add_pilgrims.contact_number',
+                'add_pilgrims.contact_relation',
+                'add_pilgrims.aadhar_card',
+                'add_pilgrims.address',
+                'add_pilgrims.vehicle_details',
+                'aadhaar_verifications.profile_image_path',
+                'payments.image'
+            )
+            ->where('add_pilgrims.id', $id)
+            ->orderBy('users.id', 'desc')
+            ->first();
 
-        // Load view with data
-        $pdf = Pdf::loadView('pdf', $data);
+        if ($tour) {
+            // Decode date_wise_destination
+            $decoded = json_decode($tour->date_wise_destination ?? '', true);
+            if (is_string($decoded)) {
+                $decoded = json_decode($decoded, true);
+            }
 
-        return $pdf->download('yatra-registration.pdf');
+            $date_wise_destination = '';
+            $tour_days = [];
+            $destinations = [];
+
+            if (is_array($decoded)) {
+                foreach ($decoded as $destination) {
+                    $date_wise_destination .= $destination['dham'] . '-' . $destination['date'] . ", ";
+                    $tour_days[] = $destination['date'];
+                    $destinations[] = $destination['dham'];
+                }
+            }
+
+            $startDate = $tour_days[0] ?? '';
+            $endDate = end($tour_days) ?: '';
+
+            $tour->date_wise_destination = rtrim($date_wise_destination, ', ');
+            $tour->tour_days = "$startDate to $endDate";
+            $tour->destinations = end($destinations) ?? '';
+            $tour->profile_image_path = $tour->profile_image_path ? public_path($tour->profile_image_path) : '';
+
+            // Decode driver and vehicle
+            $drivers = json_decode($tour->driver_name, true);
+            if (!empty($drivers)) {
+                $tour->driver_name = $drivers[0]['driver'] ?? '';
+                $tour->vehicle_number = $drivers[0]['vehicle'] ?? '';
+            }
+
+            $qrImage = Builder::create()
+                ->writer(new PngWriter())
+                ->data($tour->aadhar_card)
+                ->size(120)
+                ->margin(10)
+                ->build();
+
+            $tour->qr_code = 'data:image/png;base64,' . base64_encode($qrImage->getString());
+
+            $data = (array) $tour;
+
+            // Generate PDF
+            $pdf = Pdf::loadView('pdf', compact('data'));
+            return $pdf->download('Yatra Registration Letter - UTD.pdf');
+
+        } else {
+            return redirect()->back()->with('error', 'Data not found for the given pilgrim.');
+        }
+
     }
 
 }
