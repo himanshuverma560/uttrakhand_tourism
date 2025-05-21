@@ -38,27 +38,29 @@
 
   {{-- Heading Centered on Top --}}
 <div style="text-align: center; margin-bottom: 10px;">
-    <h2 style="margin: 0;">Uttarakhand Tourism Development Board</h2>
-    <h3 style="margin: 0;">Yatra Registration Letter</h3>
+    <h2 style="margin: 0;">Uttarakhand Tourism Development Board Yatra Registration Letter</h2>
 </div>
 
 {{-- Table-based layout for DOMPDF reliability --}}
-<table width="100%" style="margin-bottom: 20px;">
+<table width="100%">
     <tr>
         {{-- Profile Image on Left --}}
         <td width="25%" align="left">
             <img src="{{ $data['profile_image_path'] }}" alt="Profile Photo"
-                 style="width: 120px; height: 150px; object-fit: cover; border: 1px solid #000;">
+                 style="width: 120px; height: 150px; object-fit: cover;">
         </td>
 
         {{-- Empty space in center --}}
-        <td width="50%"></td>
+        <td width="25%"></td>
+        
 
         {{-- QR Code on Right --}}
         <td width="25%" align="right">
             <img src="{{ $data['qr_code'] }}" alt="QR Code"
-                 style="width: 120px; height: 120px; object-fit: contain; border: 1px solid #000;">
+                 style="width: 150px; height: 150px; object-fit: contain;">
         </td>
+
+        <td width="25%"></td>
     </tr>
 </table>
 
