@@ -182,20 +182,7 @@ class WebsiteController extends Controller
                     }
                 }
             }
-
-            $startDate = $tour_days[0] ?? '';
-            $endDate = end($tour_days) ?: '';
-            $tour->date_wise_destination = $date_wise_destination ?? '';
-            $tour->tour_days = "$startDate - $endDate";
-            $tour->destinations = end($destinations) ?? '';
-            $tour->profile_image_path = $tour->profile_image_path ? asset($tour->profile_image_path) : '';
             $tour->amount = $amount;
-
-            $drivers = json_decode($tour->driver_name, true);
-            if (!empty($drivers)) {
-                $tour->driver_name = $drivers[0]['driver'];
-                $tour->vehicle_number = $drivers[0]['vehicle'];
-            }
         }
         $qr = Qr::first();
         $payment = Setting::where('id', 1)->first();
@@ -368,13 +355,16 @@ class WebsiteController extends Controller
         $file->move($destinationPath, $fileName);
 
         // Save to DB
-        Payment::updateOrCreate(['pilgrim_id' => $request->pilgrim_id, 'user_id' => auth()->id()], [
+        $payment = Payment::updateOrCreate(['pilgrim_id' => $request->pilgrim_id, 'user_id' => auth()->id()], [
             'pilgrim_id' => $request->pilgrim_id,
             'image' => 'payment/' . $fileName,
             'user_id' => auth()->id()
         ]);
 
-        return back()->with('success', 'Screenshort uploaded successfully.');
+        return redirect()->route('download', [
+            'success' => 'Screenshort uploaded successfully.',
+            'payment_id' => $payment->id
+        ]);
     }
 
 

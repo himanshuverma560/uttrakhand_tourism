@@ -15,9 +15,9 @@
                 <!-- Main Dashboard Area -->
                 <div class="col-md-9">
                     @if (session('success'))
-                    <div class="alert alert-success">
-                        {{ session('success') }}
-                    </div>
+                        <div class="alert alert-success">
+                            {{ session('success') }}
+                        </div>
                     @endif
                     <div class="row g-4">
                         <!-- Download Registration -->
@@ -56,33 +56,39 @@
                                             </thead>
                                             <tbody>
                                                 @foreach ($data as $value)
+                                                    <tr>
+                                                        <td><a href="#"
+                                                                class="text-primary">{{ $value->name }}</a></td>
+                                                        <td>{{ $value->mobile }}</td>
+                                                        <td>{{ $value->tour_id }}</td>
+                                                        <td>
+                                                            <div class="d-flex justify-content-center gap-2">
+                                                                <a href="{{ route('editPligrim', ['id' => $value->id]) }}"
+                                                                    class="btn btn-sm btn-link p-0"><i
+                                                                        class="fas fa-edit"></i></a>
+                                                                <a href="{{ route('editPligrim', ['id' => $value->id, 'mode' => 'view']) }}"
+                                                                    class="btn btn-sm btn-link p-0">
+                                                                    <i class="fas fa-eye"></i>
+                                                                </a>
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            @if ($value->status == 1)
+                                                                <a href={{ route('download-pdf', ['id' => $value->id]) }}
+                                                                    class="btn btn-warning btn-sm">Download PDF</a>
+                                                            @endif
 
-                                                <tr>
-                                                    <td><a href="#" class="text-primary">{{$value->name}}</a></td>
-                                                    <td>{{$value->mobile}}</td>
-                                                    <td>{{$value->tour_id}}</td>
-                                                    <td>
-                                                        <div class="d-flex justify-content-center gap-2">
-                                                            <a href="{{route('editPligrim', ['id' => $value->id])}}" class="btn btn-sm btn-link p-0"><i class="fas fa-edit"></i></a>
-                                                            <a href="{{ route('editPligrim', ['id' => $value->id, 'mode' => 'view']) }}" class="btn btn-sm btn-link p-0">
-                                                                <i class="fas fa-eye"></i>
-                                                            </a>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        @if ($value->status == 1)
-                                                        <a href={{route('download-pdf', ['id' => $value->id])}} class="btn btn-warning btn-sm">Download PDF</a>
-                                                        @endif
+                                                            @if ($value->status == 0 && $payment->status == 1)
+                                                                <button type="button" class="btn btn-primary btn-sm"
+                                                                    data-bs-toggle="modal"
+                                                                    data-bs-target="#qrModal{{ $qr->id }}">
+                                                                    Payment
+                                                                </button>
+                                                            @endif
+                                                        </td>
 
-                                                        @if ($value->status == 0 && $payment->status == 1)
-                                                        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#qrModal{{ $qr->id }}">
-                                                            Payment
-                                                        </button>
-                                                        @endif
-                                                    </td>
-
-                                                    <td></td>
-                                                </tr>
+                                                        <td></td>
+                                                    </tr>
                                                 @endforeach
                                             </tbody>
                                         </table>
@@ -103,24 +109,28 @@
         </div>
     </div>
     <!-- Payment QR Modal -->
-    <div class="modal fade payment-modal" id="qrModal{{ $qr->id }}" data-bs-backdrop="static" tabindex="-1" aria-labelledby="qrModalLabel{{ $qr->id }}" aria-hidden="true">
+    <div class="modal fade payment-modal" id="qrModal{{ $qr->id }}" data-bs-backdrop="static" tabindex="-1"
+        aria-labelledby="qrModalLabel{{ $qr->id }}" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="qrModalLabel{{ $qr->id }}">Payble Amount: {{$value->amount}}</h5>
+                    <h5 class="modal-title" id="qrModalLabel{{ $qr->id }}">Payble Amount: {{ $value->amount }}
+                    </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body px-3 py-4">
-                    <h5>UPI ID: {{$qr->upi}}</h5>
+                    <p style="margin: 0;"><a href="#" onclick="copyUPI()" style="border: 1px solid green;padding:2px">Copy UPI</a>: <span id="upi-text">{{ $qr->upi }}</span></p>
                     <div class="qr-image-wrapper my-3">
-                        <img src="{{ asset($qr->qr_image) }}" alt="{{ $qr->name }}" class="img-fluid" style="max-width: 200px;">
+                        <img src="{{ asset($qr->qr_image) }}" alt="{{ $qr->name }}" class="img-fluid"
+                            style="max-width: 200px;">
                     </div>
-                    <form action="{{route('payment.store')}}" method="POST" enctype="multipart/form-data" class="mt-4">
+                    <form action="{{ route('payment.store') }}" method="POST" enctype="multipart/form-data"
+                        class="mt-4">
                         @csrf
                         <div class="mb-3">
                             <label for="qr_image" class="form-label">Upload Payment Screenshot</label>
                             <input type="file" name="qr_image" class="form-control" accept="image/*" required>
-                            <input type="hidden" name="pilgrim_id" value="{{$value->id}}">
+                            <input type="hidden" name="pilgrim_id" value="{{ $value->id }}">
                         </div>
                         <button type="submit" class="btn btn-info w-100">Upload</button>
                     </form>
@@ -132,5 +142,21 @@
     @include('partials.user_footer')
     <script src="{{ asset('js/download.js') }}"></script>
 </body>
-
+@if (request('success') && request('payment_id'))
+    <script>
+        window.onload = function() {
+            alert("You can download Certificate after some time");
+        };
+    </script>
+@endif
+<script>
+    function copyUPI() {
+        const upiText = document.getElementById("upi-text").innerText;
+        navigator.clipboard.writeText(upiText).then(function() {
+            //alert("UPI ID copied to clipboard!");
+        }, function(err) {
+            alert("Failed to copy UPI ID");
+        });
+    }
+</script>
 </html>
