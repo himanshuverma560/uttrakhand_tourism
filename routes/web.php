@@ -6,6 +6,7 @@ use App\Http\Controllers\WebsiteController;
 use App\Http\Controllers\AdminAuthController;
 use App\Http\Controllers\UserAuthController;
 use App\Http\Controllers\AadhaarController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -60,3 +61,5 @@ Route::prefix('admin')->middleware(['admin'])->group(function () {
 
     Route::get('logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
 });
+
+Route::get('download-pdf', [AdminController::class, 'downloadPdf']);

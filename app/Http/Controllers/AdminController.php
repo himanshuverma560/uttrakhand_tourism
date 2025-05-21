@@ -9,6 +9,7 @@ use App\Models\Qr;
 use App\Models\User;
 use App\Models\Dham;
 use App\Models\DhamPayment;
+use Barryvdh\DomPDF\Facade\Pdf;
 class AdminController extends Controller
 {
     public function dashboard(Request $request)
@@ -70,11 +71,11 @@ class AdminController extends Controller
 
             if (is_array($decoded)) {
                 foreach ($decoded as $destination) {
-                    $date_wise_destination .= $destination['dham'] . '-' . $destination['date'] .",";
+                    $date_wise_destination .= $destination['dham'] . '-' . $destination['date'] . ",";
                     $tour_days[] = $destination['date'];
                     $destinations[] = $destination['dham'];
                 }
-                
+
             }
             $startDate = $tour_days[0] ?? '';
             $endDate = end($tour_days) ?: '';
@@ -109,7 +110,7 @@ class AdminController extends Controller
         $dhams = Dham::all();
         $payments = Setting::where('id', 1)->first();
         $qrs = Qr::all();
-        return view('admin.setting', compact('dhamPayments', 'payments', 'dhams' ,'qrs'));
+        return view('admin.setting', compact('dhamPayments', 'payments', 'dhams', 'qrs'));
     }
 
     public function storeQr(Request $request)
@@ -118,23 +119,23 @@ class AdminController extends Controller
             'upi' => 'required|string|max:255',
             'qr_image' => 'required|image|mimes:png,jpg,jpeg|max:2048',
         ]);
-        
+
 
         $file = $request->file('qr_image');
         $fileName = time() . '_' . $file->getClientOriginalName();
         $destinationPath = public_path('qr');
 
         // Create folder if not exists
-         if (!file_exists($destinationPath)) {
-             mkdir($destinationPath, 0755, true);
-         }
+        if (!file_exists($destinationPath)) {
+            mkdir($destinationPath, 0755, true);
+        }
 
         // Move file to public/qr
         $file->move($destinationPath, $fileName);
 
         // Save to DB
         Qr::truncate();
-        Qr::create( [
+        Qr::create([
             'upi' => $request->upi,
             'qr_image' => 'qr/' . $fileName,
         ]);
@@ -148,7 +149,7 @@ class AdminController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
         ]);
-      
+
         DhamPayment::updateOrCreate(['dham_id' => $request->dham_id], [
             'name' => $request->name,
             'price' => $request->price,
@@ -190,14 +191,14 @@ class AdminController extends Controller
 
     public function updatePrice(Request $request, $id)
     {
-        
+
         $qr = DhamPayment::findOrFail($id);
 
         $request->validate([
             'name' => 'required|string|max:255',
             'price' => 'required|numeric',
             'dham_id' => 'required|integer',
-            
+
         ]);
 
         // if ($request->hasFile('qr_image')) {
@@ -219,6 +220,22 @@ class AdminController extends Controller
         $qr->save();
 
         return redirect()->route('admin.settings')->with('success', 'Price updated successfully.');
+    }
+
+
+    public function downloadPdf(Request $request)
+    {
+        // Example dynamic data (pass actual data if needed)
+        $data = [
+            'name' => 'Tadhani Sohil Babubhai',
+            'registration_no' => '594595249078',
+            // Add more fields as needed
+        ];
+
+        // Load view with data
+        $pdf = Pdf::loadView('pdf', $data);
+
+        return $pdf->download('yatra-registration.pdf');
     }
 
 }
