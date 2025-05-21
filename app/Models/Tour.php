@@ -33,7 +33,7 @@ class Tour extends Model
 
     public function pilgrims()
     {
-        return $this->hasMany(Pilgrim::class);
+        return $this->belongsTo(Pilgrim::class, 'id', 'tour_id');
     }
 
 

@@ -309,6 +309,10 @@ class AdminController extends Controller
 
             $tour->qr_code = 'data:image/png;base64,' . base64_encode($qrImage->getString());
 
+            // footer logo
+            $tour->infotech = public_path('public/images/pdf_logo.png');
+            $tour->logo_vertical = public_path('images/logo_vertical.png');
+
             $data = (array) $tour;
 
             // Generate PDF

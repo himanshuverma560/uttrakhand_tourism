@@ -202,9 +202,9 @@
     </ul>
 <hr style="width: 113%;margin-left:-6.5%">
 <div style="width: 100%;display:flex;margin-top:10px;margin-bottom:10px;">
-        <img src="../../public/images/logo_vertical.png" style="float: left;margin-right:170px;" alt="">
+        <img src="{{$data['logo_vertical']}}" style="float: left;margin-right:170px;" alt="">
         <h3 style="float: left;margin-right:170px;margin-top:20px">Powered by Ethics Infotech LLP</h3>
-        <img src="../../public/images/pdf_logo.png" style="float: left;" alt="">
+        <img src="{{$data['infotech']}}" style="float: left;" alt="">
 </div>
 <hr style="width: 113%;margin-left:-6.5%;margin-top:80px;">
 </body>

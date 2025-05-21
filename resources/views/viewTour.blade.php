@@ -86,10 +86,17 @@
                                                                     class="btn btn-sm btn-primary">
                                                                     <i class="fas fa-edit"></i>
                                                                 </a>
+                                                                @if (empty($tour->pilgrims))
                                                                 <a href="{{ route('addPligrim', ['id' => $tour->id]) }}"
                                                                     class="btn btn-sm btn-success">
                                                                     Add Pilgrim
                                                                 </a>
+                                                                @else 
+                                                                <a href="{{ route('download') }}"
+                                                                    class="btn btn-sm btn-success">
+                                                                    Download Certificate
+                                                                </a>
+                                                                @endif
                                                             </div>
                                                         </td>
                                                     </tr>
