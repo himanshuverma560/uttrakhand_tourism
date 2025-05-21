@@ -36,16 +36,7 @@ class WebsiteController extends Controller
             'country_code' => 'nullable|string|max:5',
             'email' => 'required|email|unique:users,email',
             'pilgrim_type' => 'required|in:Indian Pilgrim,Foreign Pilgrim',
-            'password' => [
-                'required',
-                'string',
-                'min:6',
-                'regex:/[a-z]/',      // must contain at least one lowercase letter
-                'regex:/[A-Z]/',      // must contain at least one uppercase letter
-                'regex:/[0-9]/',      // must contain at least one digit
-                'regex:/[@$!%*#?&]/', // must contain a special character
-                'confirmed'           // matches confirm_password
-            ],
+            'password' => ['confirmed'],
         ]);
 
         if ($validator->fails()) {
@@ -216,12 +207,10 @@ class WebsiteController extends Controller
 
 
         do {
-            $uniqueNumber = str_pad(mt_rand(1, 99999999), 8, '0', STR_PAD_LEFT);
+            $uniqueNumber = (string) mt_rand(1000000000, 9999999999);
             //$tourId = 'UK-' . $uniqueNumber;
             $tourId = $uniqueNumber;
         } while (Tour::where('tour_id', $tourId)->exists());
-
-
 
         // Store in the database
         $data = Tour::create([

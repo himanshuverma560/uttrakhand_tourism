@@ -235,7 +235,7 @@ class AdminController extends Controller
             ->leftJoin('tours', 'add_pilgrims.tour_id', '=', 'tours.id')
             ->leftJoin('aadhaar_verifications', 'aadhaar_verifications.aadhaar_number', '=', 'add_pilgrims.aadhar_card')
             ->select(
-                'users.name',
+                'aadhaar_verifications.name',
                 'users.email',
                 'users.unique_id',
                 'users.mobile',

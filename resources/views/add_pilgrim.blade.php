@@ -489,11 +489,7 @@
                     document.getElementById('age').value = res.data.age;
                     $('input[name="gender"][value="' + res.data.gender + '"]').prop('checked', true);
                     document.getElementById('address').value = res.data.formatted_address;
-                    if (res.data.street && res.data.street.trim() !== '') {
-                        document.getElementById('city').value = res.data.street;
-                    } else {
-                        document.getElementById('city').value = res.data.district;
-                    }
+                    document.getElementById('city').value = res.data.district;
                     document.getElementById('district').value = res.data.district;
                     document.getElementById('state').value = res.data.state;
 

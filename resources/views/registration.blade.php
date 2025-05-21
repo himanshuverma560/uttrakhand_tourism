@@ -127,8 +127,8 @@
                                     </div>
                                 </div>
                                 <div class="text-info mb-3">
-                                    Password must be minimum of 6 characters. It must contain alphabets, special characters
-                                    and numbers !!
+                                    {{-- Password must be minimum of 6 characters. It must contain alphabets, special characters
+                                    and numbers !! --}}
                                 </div>
                                 <button type="submit" class="btn btn-primary submit-btn">SIGN UP</button>
                             </form>
