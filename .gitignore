@@ -1,17 +1,35 @@
-/.phpunit.cache
+# Laravel default
+/vendor
 /node_modules
-/public/build
-/public/hot
 /public/storage
 /storage/*.key
 .env
 .env.backup
 .env.production
+.phpunit.result.cache
+.phpunit.cache
 Homestead.json
 Homestead.yaml
-auth.json
 npm-debug.log
 yarn-error.log
-/.fleet
+auth.json
+
+# Laravel specific build/hot files
+/public/hot
+/public/build
+
+# IDE/Editor settings
 /.idea
 /.vscode
+/.fleet
+
+# Ignore QR, Aadhaar, and Payment images
+/public/qr/*
+/public/aadhaar_photos/*
+/public/payment/*
+
+# Ignore compiled PDF outputs (if any)
+/storage/app/*.pdf
+
+# Ignore debug output
+*.log
