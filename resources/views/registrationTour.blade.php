@@ -216,8 +216,8 @@
     </div>
 
     <!-- Availability Modal -->
-    <div class="modal fade availabilityModal" id="availabilityModal" tabindex="-1" aria-labelledby="availabilityModalLabel"
-        aria-hidden="true">
+    <div class="modal fade availabilityModal" id="availabilityModal" tabindex="-1"
+        aria-labelledby="availabilityModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header bg-light">
@@ -242,7 +242,8 @@
         </div>
     </div>
 
-    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
 
     <script>
@@ -429,6 +430,27 @@
                 if (tourStartDate) dhamDateInput.min = tourStartDate;
                 if (tourEndDate) dhamDateInput.max = tourEndDate;
 
+                // for background-color
+                flatpickr(dhamDateInput, {
+                    minDate: tourStartDate || null,
+                    maxDate: tourEndDate || null,
+                    onDayCreate: function(dObj, dStr, fp, dayElem) {
+                        if (!tourStartDate) return; // safety check
+                        const min = new Date(tourStartDate);
+                        const dayDate = dayElem.dateObj;
+                        const max = tourEndDate ? new Date(tourEndDate) : null;
+
+                        if (dayDate < min) {
+                            dayElem.style.backgroundColor = "red";
+                            dayElem.style.color = "white";
+                        } else if (min && max && dayDate >= min && dayDate <= max) {
+                            // 🟢 GREEN for dates between startDate and endDate
+                            dayElem.style.backgroundColor = "green";
+                            dayElem.style.color = "white";
+                        }
+                    }
+                });
+
                 const removeBtn = newRow.querySelector('.remove-destination');
                 removeBtn.addEventListener('click', function() {
                     newRow.remove();
@@ -439,15 +461,46 @@
             function updateDhamDateConstraints() {
                 const startDate = document.getElementById('tourStartDate').value;
                 const endDate = document.getElementById('tourEndDate').value;
+
                 document.querySelectorAll('.dham-date').forEach(input => {
-                    if (startDate) input.min = startDate;
-                    if (endDate) input.max = endDate;
-                    // If current value is outside new constraints, clear it
-                    if ((startDate && input.value < startDate) || (endDate && input.value > endDate)) {
-                        input.value = '';
+                    // If already has a flatpickr instance, destroy and re-init with new dates
+                    if (input._flatpickr) {
+                        input._flatpickr.destroy();
                     }
+
+                    // Reinitialize flatpickr with updated constraints
+                    flatpickr(input, {
+                        dateFormat: "Y-m-d",
+                        minDate: startDate || null,
+                        maxDate: endDate || null,
+                        defaultDate: input.value || null,
+                        onDayCreate: function(dObj, dStr, fp, dayElem) {
+                            if (!startDate) return;
+                            const min = startDate ? new Date(startDate) : null;
+                            const max = endDate ? new Date(endDate) : null;
+                            const dayDate = dayElem.dateObj;
+
+                            if (min && dayDate < min) {
+                                // RED background for dates before startDate
+                                dayElem.style.backgroundColor = "red";
+                                dayElem.style.color = "white";
+                            } else if (min && max && dayDate >= min && dayDate <= max) {
+                                // 🟢 GREEN for dates between startDate and endDate
+                                dayElem.style.backgroundColor = "green";
+                                dayElem.style.color = "white";
+                            }
+
+
+                        },
+                        onChange: function(selectedDates, dateStr, instance) {
+                            if ((startDate && dateStr < startDate) || (endDate && dateStr > endDate)) {
+                                instance.clear(); // Clear invalid date
+                            }
+                        }
+                    });
                 });
             }
+
 
             // Add event listeners for tour date changes
             document.getElementById('tourStartDate').addEventListener('change', function() {
@@ -585,7 +638,8 @@
             // Check if date is before today
             const currentDate = new Date();
             const cardDate = new Date(year, month, date);
-            const isPastDate = cardDate < new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate());
+            const isPastDate = cardDate < new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate
+                .getDate());
             const bgColor = isPastDate ? '#ff6b6b' : '#9ed7ab';
 
             box.innerHTML = `
@@ -811,11 +865,12 @@
     @include('partials.user_footer')
 </body>
 @if (request('success') && request('tour_id'))
-        <script>
-            window.onload = function() {
-                alert("{{ addslashes(request('success')) }}");
-                window.location.href = "{{ route('addPligrim', ['id' => request('tour_id')]) }}";
-            };
-        </script>
-    @endif
+    <script>
+        window.onload = function() {
+            alert("{{ addslashes(request('success')) }}");
+            window.location.href = "{{ route('addPligrim', ['id' => request('tour_id')]) }}";
+        };
+    </script>
+@endif
+
 </html>
