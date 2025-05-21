@@ -59,8 +59,8 @@ Route::prefix('admin')->middleware(['admin'])->group(function () {
     Route::get('admin/price/edit/{id}', [AdminController::class, 'editPrice'])->name('price.edit');
     Route::post('admin/price/update/{id}', [AdminController::class, 'updatePrice'])->name('price.update');
 
-    Route::get('download-pdf/{id}', [AdminController::class, 'downloadPdf'])->name('download-pdf');
+    
 
     Route::get('logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
 });
-
+Route::get('download-pdf/{id}', [AdminController::class, 'downloadPdf'])->name('download-pdf');

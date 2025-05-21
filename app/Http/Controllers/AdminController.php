@@ -304,6 +304,7 @@ class AdminController extends Controller
             $tour->tour_days = "$startDate To $endDate";
             $tour->destinations = end($destinations) ?? '';
             $tour->profile_image_path = $tour->profile_image_path ? public_path($tour->profile_image_path) : '';
+            $tour->unique_id = $tour->aadhar_card;
 
             // Decode driver and vehicle
             $drivers = json_decode($tour->driver_name, true);
