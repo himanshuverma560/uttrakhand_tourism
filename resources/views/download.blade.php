@@ -71,33 +71,7 @@
                                                     </td>
                                                     <td>
                                                         @if ($value->status == 1)
-                                                        <button class="btn btn-danger download-pdf"
-                                                            data-regno="{{Auth::user()->unique_id}}"
-                                                            data-group-id="{{$value->tour_id}}"
-                                                            data-destination="{{$value->destinations}}"
-                                                            data-tour-days="{{$value->tour_days}}"
-                                                            data-selected-dates="{{$value->date_wise_destination}}"
-                                                            data-full-name="{{$value->name}}"
-                                                            data-gender="{{$value->gender}}"
-                                                            data-age="{{$value->age}}"
-                                                            data-diseases="NA"
-                                                            data-aadhar="{{$value->aadhar_card}}"
-                                                            data-email="{{$value->email}}"
-                                                            data-mobile="{{$value->mobile}}"
-                                                            data-address="{{$value->address}}"
-                                                            data-state="{{$value->state}}"
-                                                            data-photo-url="{{$value->profile_image_path}}"
-                                                            data-qr-url="https://example.com/qr.jpg" ,
-                                                            data-city="{{$value->city}}" ,
-                                                            data-country="{{$value->country}}"
-                                                            data-district="{{$value->district}}"
-                                                            data-contact-number="{{$value->contact_number}}"
-                                                            data-contact-person="{{$value->contact_person}}"
-                                                            data-contact-relation="{{$value->contact_relation}}"
-                                                            data-vehicle-details="{{$value->vehicle_details}}"
-                                                            data-drivers-name="{{$value->driver_name}}"
-                                                            data-vehicle-number="{{$value->vehicle_number}}">
-                                                            Download PDF</button>
+                                                        <a href={{route('download-pdf', ['id' => $value->id])}} class="btn btn-warning btn-sm">Download PDF</a>
                                                         @endif
 
                                                         @if ($value->status == 0 && $payment->status == 1)

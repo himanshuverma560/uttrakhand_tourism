@@ -258,6 +258,8 @@ class AdminController extends Controller
                 'add_pilgrims.contact_relation',
                 'add_pilgrims.aadhar_card',
                 'add_pilgrims.address',
+                'add_pilgrims.medical',
+                'add_pilgrims.doctor',
                 'add_pilgrims.vehicle_details',
                 'aadhaar_verifications.profile_image_path',
                 'payments.image'
@@ -276,20 +278,30 @@ class AdminController extends Controller
             $date_wise_destination = '';
             $tour_days = [];
             $destinations = [];
+            $date_map = [];
+
+            $dhams = Dham::pluck('name')->toArray();
 
             if (is_array($decoded)) {
                 foreach ($decoded as $destination) {
-                    $date_wise_destination .= $destination['dham'] . '-' . $destination['date'] . ", ";
+                    //$date_wise_destination .= $destination['dham'] . '-' . $destination['date'] . ", ";
                     $tour_days[] = $destination['date'];
                     $destinations[] = $destination['dham'];
+                    $date_map[$destination['dham']] = $destination['date'];
                 }
+            }
+
+            //$date_wise_destination = '';
+            foreach ($dhams as $dham) {
+                $date = $date_map[$dham] ?? '-';
+                $date_wise_destination .= $dham . ': ' . $date . "\n";
             }
 
             $startDate = $tour_days[0] ?? '';
             $endDate = end($tour_days) ?: '';
 
             $tour->date_wise_destination = rtrim($date_wise_destination, ', ');
-            $tour->tour_days = "$startDate to $endDate";
+            $tour->tour_days = "$startDate To $endDate";
             $tour->destinations = end($destinations) ?? '';
             $tour->profile_image_path = $tour->profile_image_path ? public_path($tour->profile_image_path) : '';
 
@@ -308,9 +320,12 @@ class AdminController extends Controller
                 ->build();
 
             $tour->qr_code = 'data:image/png;base64,' . base64_encode($qrImage->getString());
+            $tour->aadhar_card = 'XXXXXXXX' . substr($tour->aadhar_card, -4);
+            $tour->medical = implode(',', json_decode($tour->medical ?? [], true));
+            $tour->doctor = $tour->doctor == 1 ? 'Doctor' : '-';
 
             // footer logo
-            $tour->infotech = public_path('public/images/pdf_logo.png');
+            $tour->pdf_logo = public_path('images/pdf_logo.png');
             $tour->logo_vertical = public_path('images/logo_vertical.png');
 
             $data = (array) $tour;

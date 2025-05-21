@@ -8,6 +8,9 @@
         body {
             font-family: Arial, sans-serif;
             font-size: 13px;
+            margin: 0;
+            /* no page margin */
+            padding: 0;
         }
 
         h2 {
@@ -22,7 +25,7 @@
         th,
         td {
             border: 1px solid #000;
-            padding: 8px 6px;
+            padding: 6px 5px;
             vertical-align: top;
         }
 
@@ -86,7 +89,7 @@
             </tr>
             <tr>
                 <td style="width: 50%;">Diseases</td>
-                <td>{{ $data['status'] ?? 'NA' }}</td>
+                <td>{{ $data['medical'] ?? 'NA' }}</td>
             </tr>
             <tr>
                 <td style="width: 50%;">Aadhar Card Number</td>
@@ -134,7 +137,7 @@
             </tr>
             <tr>
                 <td style="width: 50%;">Profession</td>
-                <td>{{ $data['profession'] ?? '-' }}</td>
+                <td>{{ $data['doctor'] ?? '-' }}</td>
             </tr>
             <tr>
                 <td style="width: 50%;">Mode of Travel for Dham</td>
@@ -200,13 +203,14 @@
         <li>a) Warm Cloth (Jacket, Shawl, Gloves, etc)</li>
         <li>b) Valid Personal ID Proof</li>
     </ul>
-<hr style="width: 113%;margin-left:-6.5%">
-<div style="width: 100%;display:flex;margin-top:10px;margin-bottom:10px;">
-        <img src="{{$data['logo_vertical']}}" style="float: left;margin-right:170px;" alt="">
+    <hr style="width: 113%;margin-left:-6.5%">
+    <div style="width: 100%;display:flex;margin-top:5px;margin-bottom:5px;">
+        <img src="{{ $data['logo_vertical'] }}" style="float: left;margin-right:170px;width: 60px; height: 60px;"
+            alt="">
         <h3 style="float: left;margin-right:170px;margin-top:20px">Powered by Ethics Infotech LLP</h3>
-        <img src="{{$data['infotech']}}" style="float: left;" alt="">
-</div>
-<hr style="width: 113%;margin-left:-6.5%;margin-top:80px;">
+        <img src="{{ $data['pdf_logo'] }}" style="float: left; width: 60px; height: 60px;">
+    </div>
+    <hr style="width: 113%;margin-left:-6.5%;margin-top:80px;">
 </body>
 
 </html>
