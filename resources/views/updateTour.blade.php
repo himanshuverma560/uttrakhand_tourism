@@ -329,7 +329,11 @@
                     const min = new Date(tourStartDate);
                     const dayDate = dayElem.dateObj;
                     const max = tourEndDate ? new Date(tourEndDate) : null;
-                    if (dayDate < min) {
+
+                    if (dayDate.toDateString() === min.toDateString()) {
+                        dayElem.style.backgroundColor = "green";
+                        dayElem.style.color = "white";
+                    } else if (dayDate < min) {
                         dayElem.style.backgroundColor = "red";
                         dayElem.style.color = "white";
                     } else if (min && max && dayDate >= min && dayDate <= max) {
@@ -364,7 +368,10 @@
                         const min = startDate ? new Date(startDate) : null;
                         const max = endDate ? new Date(endDate) : null;
                         const dayDate = dayElem.dateObj;
-                        if (min && dayDate < min) {
+                        if (dayDate.toDateString() === min.toDateString()) {
+                            dayElem.style.backgroundColor = "green";
+                            dayElem.style.color = "white";
+                        } else if (min && dayDate < min) {
                             // RED background for dates before startDate
                             dayElem.style.backgroundColor = "red";
                             dayElem.style.color = "white";
