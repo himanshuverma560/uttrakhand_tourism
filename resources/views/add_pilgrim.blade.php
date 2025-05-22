@@ -337,6 +337,8 @@
                                                             foreach ($driver as $d) {
                                                                 echo '<option value='.htmlspecialchars($d).'>' . htmlspecialchars($d) . '</option>';
                                                             }
+                                                        } else {
+                                                            echo '<option value='.$data->type_of_transport.'>' . $data->type_of_transport . '</option>';
                                                         }
                                                         ?>
 
