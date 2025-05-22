@@ -312,6 +312,9 @@ class AdminController extends Controller
             if (!empty($drivers)) {
                 $tour->driver_name = $drivers[0]['driver'] ?? '';
                 $tour->vehicle_number = $drivers[0]['vehicle'] ?? '';
+            } else {
+                $tour->driver_name = '';
+                $tour->vehicle_number = '';
             }
 
             $qrImage = Builder::create()
