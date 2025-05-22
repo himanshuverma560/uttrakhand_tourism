@@ -14,6 +14,7 @@ use App\Models\Pilgrim;
 use Illuminate\Support\Facades\Storage;
 use App\Models\DhamPayment;
 use App\Models\Payment;
+use Carbon\Carbon;
 
 class WebsiteController extends Controller
 {
@@ -212,6 +213,14 @@ class WebsiteController extends Controller
             $tourId = $uniqueNumber;
         } while (Tour::where('tour_id', $tourId)->exists());
 
+        $today = Carbon::today();
+        $totalToursToday = Tour::whereDate('created_at', $today)
+        ->where('user_id', auth()->id())
+        ->count();
+
+        $formattedDate = $today->format('dmY');
+        $tourName = $formattedDate . '.' . ($totalToursToday + 1);
+
         // Store in the database
         $data = Tour::create([
             'user_id' => auth()->id(),
@@ -224,7 +233,8 @@ class WebsiteController extends Controller
             'driver_name' => json_encode($drivers),
             'vehicle_number' => json_encode($drivers),
             'status' => 0,
-            'tour_id' => $tourId
+            'tour_id' => $tourId,
+            'tour_name' => 'Tour_'.$tourName
         ]);
 
         return redirect()->route('tour', [

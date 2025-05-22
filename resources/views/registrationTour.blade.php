@@ -786,7 +786,7 @@
         .modal-dialog {
             width: 75%;
             min-height: 5%;
-            overflow-y: scroll;
+            overflow-y: auto;
             margin: auto;
             margin-top: 4%;
         }

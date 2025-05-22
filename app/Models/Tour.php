@@ -28,7 +28,8 @@ class Tour extends Model
         'date_wise_destination',
         'driver_name',
         'vehicle_number',
-        'tour_id'
+        'tour_id',
+        'tour_name'
     ];
 
     public function pilgrims()

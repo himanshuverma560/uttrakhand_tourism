@@ -60,7 +60,7 @@
                                                         <td>{{ $index + 1 }}</td>
                                                         <td>{{ $tour->created_at->format('d-m-Y') }}</td>
                                                         <td>{{ $tour->tour_id }}</td>
-                                                        <td>Char Dham Yatra</td>
+                                                        <td>{{$tour->tour_name}}</td>
                                                         <!-- You can make this dynamic if needed -->
                                                         <td>{{ \Carbon\Carbon::parse($tour->start_date)->format('d-m-Y') }}
                                                             to

@@ -11,6 +11,7 @@ use App\Models\Dham;
 use App\Models\DhamPayment;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Endroid\QrCode\Builder\Builder;
+use Carbon\Carbon;
 use Endroid\QrCode\Writer\PngWriter;
 
 
@@ -301,7 +302,7 @@ class AdminController extends Controller
             $endDate = end($tour_days) ?: '';
 
             $tour->date_wise_destination = rtrim($date_wise_destination, ', ');
-            $tour->tour_days = "$startDate To $endDate";
+            $tour->tour_days = Carbon::parse($startDate)->format('d/m/Y') ." To ".  Carbon::parse($endDate)->format('d/m/Y');
             $tour->destinations = end($destinations) ?? '';
             $tour->profile_image_path = $tour->profile_image_path ? public_path($tour->profile_image_path) : '';
             $tour->unique_id = $tour->aadhar_card;
