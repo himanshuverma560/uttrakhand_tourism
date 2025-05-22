@@ -614,12 +614,11 @@
                 const endDate = document.getElementById('tourEndDate').value;
                 const touristCount = document.getElementById('touristCount').value;
                 const checkAvailabilityButton = document.getElementById('checkAvailability');
-                checkAvailabilityButton.style.display = 'block';
-                // if (startDate && endDate && touristCount) {
-                //     checkAvailabilityButton.style.display = 'inline-block';
-                // } else {
-                //     checkAvailabilityButton.style.display = 'none';
-                // }
+                if (startDate && endDate && touristCount) {
+                    checkAvailabilityButton.style.display = 'inline-block';
+                } else {
+                    checkAvailabilityButton.style.display = 'none';
+                }
             }
         }
 

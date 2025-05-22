@@ -15,9 +15,9 @@
                 <!-- Main Dashboard Area -->
                 <div class="col-md-9">
                     @if (session('success'))
-                        <div class="alert alert-success">
-                            {{ session('success') }}
-                        </div>
+                    <div class="alert alert-success">
+                        {{ session('success') }}
+                    </div>
                     @endif
                     <div class="row g-4">
                         <!-- Registration for Tour -->
@@ -51,18 +51,18 @@
                                                 <div class="row">
 
                                                     <div class="col-md-4 mb-3">
-                                                        <label class="form-label">Tour Start & End Date<span
+                                                        <label class="form-label">Tour Start Date<span
                                                                 class="text-danger">*</span></label>
-                                                        <input type="date" name="start_date"
+                                                        <input type="date" name="start_date" id="tourStartDate"
                                                             value="{{ \Carbon\Carbon::parse($tour->start_date)->format('Y-m-d') }}"
                                                             class="form-control" placeholder="Please Select Tour Date"
                                                             required>
                                                     </div>
 
                                                     <div class="col-md-4 mb-3">
-                                                        <label class="form-label">Tour Start & End Date<span
+                                                        <label class="form-label">Tour End Date<span
                                                                 class="text-danger">*</span></label>
-                                                        <input type="date" name="end_date"
+                                                        <input type="date" name="end_date" id="tourEndDate"
                                                             value="{{ \Carbon\Carbon::parse($tour->end_date)->format('Y-m-d') }}"
                                                             class="form-control" placeholder="Please Select Tour Date"
                                                             required>
@@ -74,6 +74,14 @@
                                                             name="number_of_tourist" placeholder="No. of Tourists"
                                                             min="1" max="6"
                                                             value="{{ $tour->number_of_tourist }}">
+                                                    </div>
+                                                </div>
+                                                <div class="row mb-3">
+                                                    <div class="col-12">
+                                                        <button type="button" class="btn btn-primary"
+                                                            id="checkAvailability">
+                                                            <i class="fas fa-calendar-check"></i> Check Availability
+                                                        </button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -115,7 +123,8 @@
                                                         <select class="form-select" id="transportationType"
                                                             name="type_of_transport">
                                                             <option value="{{ $tour->type_of_transport }}">
-                                                                {{ $tour->type_of_transport }}</option>
+                                                                {{ $tour->type_of_transport }}
+                                                            </option>
                                                         </select>
                                                     </div>
 
@@ -144,7 +153,7 @@
                                                     </div>
                                                     <!-- Vehicle Details Table -->
                                                     <?php $drivers = json_decode($tour->driver_name, true);  ?>
-                                                    <div class="table-responsive mt-3" style="<?php if(empty($drivers)) echo "display: none"; ?>">
+                                                    <div class="table-responsive mt-3" style="<?php if (empty($drivers)) echo "display: none"; ?>">
                                                         <table class="table table-bordered" id="vehicleTable">
                                                             <thead>
                                                                 <tr>
@@ -157,24 +166,24 @@
                                                             </thead>
                                                             <tbody>
                                                                 <?php
-                                                                  
+
                                                                 if (!empty($drivers)) {
-                                                                    foreach ($drivers as $index=>$driver)
+                                                                    foreach ($drivers as $index => $driver)
                                                                 ?>
-                                                                <tr>
-                                                                    <td>{{$tour->mode_of_travel}}</td>
-                                                                    <td>{{$tour->type_of_transport}}</td>
-                                                                    <td>{{$driver['driver']}}<input type="hidden" name="drivers[]" value="{{$driver['driver']}}"></td>
-                                                                    <td>{{$driver['vehicle']}}<input type="hidden" name="vehicle[]" value="{{$driver['vehicle']}}"></td>
-                                                                    <td>
-                                                                        <button type="button" class="btn btn-sm btn-outline-primary edit-vehicle" data-index="{{$index}}">
-                                                                            <i class="fas fa-edit"></i>
-                                                                        </button>
-                                                                        <button type="button" class="btn btn-sm btn-outline-danger delete-vehicle" data-index="{{$index}}">
-                                                                            <i class="fas fa-trash"></i>
-                                                                        </button>
-                                                                    </td>
-                                                                </tr>
+                                                                    <tr>
+                                                                        <td>{{$tour->mode_of_travel}}</td>
+                                                                        <td>{{$tour->type_of_transport}}</td>
+                                                                        <td>{{$driver['driver']}}<input type="hidden" name="drivers[]" value="{{$driver['driver']}}"></td>
+                                                                        <td>{{$driver['vehicle']}}<input type="hidden" name="vehicle[]" value="{{$driver['vehicle']}}"></td>
+                                                                        <td>
+                                                                            <button type="button" class="btn btn-sm btn-outline-primary edit-vehicle" data-index="{{$index}}">
+                                                                                <i class="fas fa-edit"></i>
+                                                                            </button>
+                                                                            <button type="button" class="btn btn-sm btn-outline-danger delete-vehicle" data-index="{{$index}}">
+                                                                                <i class="fas fa-trash"></i>
+                                                                            </button>
+                                                                        </td>
+                                                                    </tr>
                                                                 <?php } ?>
                                                             </tbody>
                                                         </table>
@@ -198,29 +207,30 @@
                                                 </div>
                                                 <div id="destinationContainer">
                                                     @foreach (json_decode($tour->date_wise_destination, true) as $index => $destination)
-                                                        <div class="destination-row row mb-2">
-                                                            <div class="col-md-5">
-                                                                <select class="form-select" name="dham[]">
-                                                                    <option value="">Select Dham</option>
-                                                                    @foreach (['Yamunotri', 'Gangotri', 'Kedarnath', 'Badrinath', 'Hemkund Sahib'] as $dham)
-                                                                        <option value="{{ $dham }}"
-                                                                            {{ $destination['dham'] == $dham ? 'selected' : '' }}>
-                                                                            {{ $dham }}</option>
-                                                                    @endforeach
-                                                                </select>
-                                                            </div>
-                                                            <div class="col-md-5">
-                                                                <input type="date" class="form-control"
-                                                                    name="dhamDate[]"
-                                                                    value="{{ $destination['date'] }}">
-                                                            </div>
-                                                            <div class="col-md-2">
-                                                                <button type="button"
-                                                                    class="btn btn-danger remove-destination">
-                                                                    <i class="fas fa-times"></i>
-                                                                </button>
-                                                            </div>
+                                                    <div class="destination-row row mb-2">
+                                                        <div class="col-md-5">
+                                                            <select class="form-select" name="dham[]">
+                                                                <option value="">Select Dham</option>
+                                                                @foreach (['Yamunotri', 'Gangotri', 'Kedarnath', 'Badrinath', 'Hemkund Sahib'] as $dham)
+                                                                <option value="{{ $dham }}"
+                                                                    {{ $destination['dham'] == $dham ? 'selected' : '' }}>
+                                                                    {{ $dham }}
+                                                                </option>
+                                                                @endforeach
+                                                            </select>
                                                         </div>
+                                                        <div class="col-md-5">
+                                                            <input type="date" class="form-control"
+                                                                name="dhamDate[]"
+                                                                value="{{ $destination['date'] }}">
+                                                        </div>
+                                                        <div class="col-md-2">
+                                                            <button type="button"
+                                                                class="btn btn-danger remove-destination">
+                                                                <i class="fas fa-times"></i>
+                                                            </button>
+                                                        </div>
+                                                    </div>
                                                     @endforeach
                                                 </div>
                                                 <button type="button" class="btn btn-primary" id="addDestination">
@@ -245,83 +255,333 @@
             </div>
         </div>
     </div>
+
+    <!-- Availability Modal -->
+    <div class="modal fade availabilityModal" id="availabilityModal" tabindex="-1"
+        aria-labelledby="availabilityModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header bg-light">
+                    <h5 class="modal-title" id="availabilityModalLabel">Available Slots</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <h4 class="mb-0 me-3" id="currentMonthDisplay"></h4>
+                        <div>
+                            <button class="btn btn-sm btn-outline-secondary me-2" id="prevMonth"><i
+                                    class="fas fa-chevron-left"></i></button>
+                            <button class="btn btn-sm btn-outline-secondary" id="nextMonth"><i
+                                    class="fas fa-chevron-right"></i></button>
+                        </div>
+                    </div>
+                    <div id="availabilityGrid" class="row g-3">
+                        <!-- Calendar boxes will be added here dynamically -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script>
+        // Add/Remove destination functionality
+        const destinationContainer = document.getElementById('destinationContainer');
+        const addDestinationBtn = document.getElementById('addDestination');
+        updateDhamDateConstraints();
+        addDestinationBtn.addEventListener('click', function() {
+            const newRow = document.createElement('div');
+            newRow.className = 'destination-row row mb-3';
+            newRow.innerHTML = `
+                    <div class="col-md-5">
+                        <select class="form-select" name="dham[]" required>
+                            <option value="">Plan your destination</option>
+                            <option value="Yamunotri">Yamunotri</option>
+                            <option value="Gangotri">Gangotri</option>
+                            <option value="Kedarnath">Kedarnath</option>
+                            <option value="Badrinath">Badrinath</option>
+                            <option value="Hemkund Sahib">Hemkund Sahib</option>
+                        </select>
+                    </div>
+                    <div class="col-md-5">
+                        <input type="date" class="form-control dham-date" name="dhamDate[]" required>
+                    </div>
+                    <div class="col-md-2 d-flex">
+                        <button type="button" class="btn btn-danger remove-destination">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                `;
+            destinationContainer.appendChild(newRow);
+            // Set min/max dates for the new dham date input
+            const dhamDateInput = newRow.querySelector('.dham-date');
+            const tourStartDate = document.getElementById('tourStartDate').value;
+            const tourEndDate = document.getElementById('tourEndDate').value;
+            if (tourStartDate) dhamDateInput.min = tourStartDate;
+            if (tourEndDate) dhamDateInput.max = tourEndDate;
+            // for background-color
+            flatpickr(dhamDateInput, {
+                minDate: tourStartDate || null,
+                maxDate: tourEndDate || null,
+                onDayCreate: function(dObj, dStr, fp, dayElem) {
+                    if (!tourStartDate) return; // safety check
+                    const min = new Date(tourStartDate);
+                    const dayDate = dayElem.dateObj;
+                    const max = tourEndDate ? new Date(tourEndDate) : null;
+                    if (dayDate < min) {
+                        dayElem.style.backgroundColor = "red";
+                        dayElem.style.color = "white";
+                    } else if (min && max && dayDate >= min && dayDate <= max) {
+                        // 🟢 GREEN for dates between startDate and endDate
+                        dayElem.style.backgroundColor = "green";
+                        dayElem.style.color = "white";
+                    }
+                }
+            });
+            const removeBtn = newRow.querySelector('.remove-destination');
+            removeBtn.addEventListener('click', function() {
+                newRow.remove();
+            });
+        });
+        // Function to update all dham date constraints
+        function updateDhamDateConstraints() {
+            const startDate = document.getElementById('tourStartDate').value;
+            const endDate = document.getElementById('tourEndDate').value;
+            document.querySelectorAll('.dham-date').forEach(input => {
+                // If already has a flatpickr instance, destroy and re-init with new dates
+                if (input._flatpickr) {
+                    input._flatpickr.destroy();
+                }
+                // Reinitialize flatpickr with updated constraints
+                flatpickr(input, {
+                    dateFormat: "Y-m-d",
+                    minDate: startDate || null,
+                    maxDate: endDate || null,
+                    defaultDate: input.value || null,
+                    onDayCreate: function(dObj, dStr, fp, dayElem) {
+                        if (!startDate) return;
+                        const min = startDate ? new Date(startDate) : null;
+                        const max = endDate ? new Date(endDate) : null;
+                        const dayDate = dayElem.dateObj;
+                        if (min && dayDate < min) {
+                            // RED background for dates before startDate
+                            dayElem.style.backgroundColor = "red";
+                            dayElem.style.color = "white";
+                        } else if (min && max && dayDate >= min && dayDate <= max) {
+                            // 🟢 GREEN for dates between startDate and endDate
+                            dayElem.style.backgroundColor = "green";
+                            dayElem.style.color = "white";
+                        }
+                    },
+                    onChange: function(selectedDates, dateStr, instance) {
+                        if ((startDate && dateStr < startDate) || (endDate && dateStr > endDate)) {
+                            instance.clear(); // Clear invalid date
+                        }
+                    }
+                });
+            });
+        }
+        // Add remove functionality to initial destination row
+        document.querySelectorAll('.remove-destination').forEach(btn => {
+            btn.addEventListener('click', function() {
+                if (destinationContainer.children.length > 1) {
+                    this.closest('.destination-row').remove();
+                }
+            });
+        });
+        // Update initial destination row class
+        document.querySelector('input[name="dhamDate[]"]').classList.add('dham-date');
+        // Form validation
+
         const tourForm = document.getElementById('tourRegistrationForm');
-        if (tourForm) {
-            console.log('Tour Registration Form Loaded');
-            // Initialize jQuery daterangepicker
+        tourForm.addEventListener('submit', function(e) {
+            e.preventDefault();
 
-            // Mode of Travel dependency
-            const travelModeSelect = document.getElementById('travelMode');
-            const transportationSelect = document.getElementById('transportationType');
-            const vehicleDetails = document.querySelectorAll('.vehicle-details');
-            const vehicleRequired = document.querySelectorAll('.vehicle-required');
-            const driverName = document.getElementById('driverName');
-            const vehicleNumber = document.getElementById('vehicleNumber');
+            // Basic validation
+            //const dateRange = tourForm.querySelector('.daterange').value;
+            const tourists = tourForm.querySelector('input[type="number"]').value;
+            const travelMode = travelModeSelect.value;
+            const transportation = transportationSelect.value;
+            const destinations = tourForm.querySelectorAll('.destination-row');
 
-            // Initialize vehicles array to store all vehicles
-            let vehicles = [];
-            const vehicleTable = document.getElementById('vehicleTable');
-            const addVehicleBtn = document.getElementById('addVehicle');
+            let isValid = true;
+            let errorMessage = '';
 
-            // Initialize transportation select as disabled
-            // if (transportationSelect) {
-            //     transportationSelect.disabled = true;
-            // } 
 
-            travelModeSelect.addEventListener('change', function() {
-                // First clear and enable the transportation select
-                transportationSelect.innerHTML = '<option value="">Select</option>';
-                transportationSelect.disabled = false;
 
-                // Hide vehicle details by default
-                vehicleDetails.forEach(detail => detail.style.display = 'none');
-                vehicleRequired.forEach(req => req.style.display = 'none');
-                driverName.required = false;
-                vehicleNumber.required = false;
+            if (!tourists || tourists < 1 || tourists > 6) {
+                errorMessage += 'Number of tourists must be between 1 and 6\n';
+                isValid = false;
+            }
 
-                // Add options based on selected travel mode
-                switch (this.value) {
-                    case 'By Road':
-                        const roadOptions = [
-                            'Bus/Mini Bus',
-                            'Private Car',
-                            'Taxi/Maxi',
-                            'Two-wheeler'
-                        ];
-                        roadOptions.forEach(option => {
-                            const optionElement = new Option(option, option);
-                            transportationSelect.add(optionElement);
-                        });
-                        vehicleDetails.forEach(detail => detail.style.display = 'block');
-                        break;
+            if (!travelMode) {
+                errorMessage += 'Please select mode of travel\n';
+                isValid = false;
+            }
 
-                    case 'By Helicopter':
-                        transportationSelect.add(new Option('Chartered Helicopter', 'Chartered Helicopter'));
-                        vehicleDetails.forEach(detail => detail.style.display = 'none');
-                        break;
+            if (!transportation && travelMode !== 'By Walking') {
+                errorMessage += 'Please select type of transportation\n';
+                isValid = false;
+            }
+            if (travelMode === 'By Road' && vehicles.length === 0) {
+                errorMessage += 'Please add at least one vehicle\n';
+                isValid = false;
+            }
+            // Add vehicles data to form before submit
+            if (vehicles.length > 0) {
+                const vehiclesInput = document.createElement('input');
+                vehiclesInput.type = 'hidden';
+                vehiclesInput.name = 'vehicles';
+                vehiclesInput.value = JSON.stringify(vehicles);
+                this.appendChild(vehiclesInput);
+            }
 
-                    case 'By Walking':
-                        transportationSelect.add(new Option('By Walking', 'By Walking'));
-                        transportationSelect.value = 'By Walking';
-                        vehicleDetails.forEach(detail => detail.style.display = 'none');
-                        break;
+            if (destinations.length < 1) {
+                errorMessage += 'Please add at least one destination\n';
+                isValid = false;
+            }
 
-                    default:
-                        transportationSelect.disabled = true;
-                        vehicleDetails.forEach(detail => detail.style.display = 'none');
+            let hasInvalidDestination = false;
+            destinations.forEach(dest => {
+                const dham = dest.querySelector('select[name="dham[]"]').value;
+                const date = dest.querySelector('input[name="dhamDate[]"]').value;
+                if (!dham || !date) {
+                    hasInvalidDestination = true;
                 }
             });
 
-            // Function to update vehicles table
-            function updateVehiclesTable() {
-                const tbody = vehicleTable.querySelector('tbody');
-                const vehicleTableContainer = vehicleTable.closest('.table-responsive');
-                vehicleTableContainer.style.display = vehicles.length > 0 ? 'block' : 'none';
-                tbody.innerHTML = '';
-                vehicles.forEach((vehicle, index) => {
-                    const row = tbody.insertRow();
-                    row.innerHTML = `
+            if (hasInvalidDestination) {
+                errorMessage += 'Please fill in all destination details\n';
+                isValid = false;
+            }
+
+            if (!isValid) {
+                alert(errorMessage);
+                return;
+            }
+
+            this.submit();
+        });
+    </script>
+    <script>
+        // Mode of Travel dependency
+        const travelModeSelect = document.getElementById('travelMode');
+        const transportationSelect = document.getElementById('transportationType');
+        const vehicleDetails = document.querySelectorAll('.vehicle-details');
+        const vehicleRequired = document.querySelectorAll('.vehicle-required');
+        const driverName = document.getElementById('driverName');
+        let drivers = document.querySelectorAll('input[name="drivers[]"]');
+        const vehicleNumber = document.getElementById('vehicleNumber');
+        let vehicleNumbers = document.querySelectorAll('input[name="vehicle[]"]');
+
+        // Initialize vehicles array to store all vehicles
+        let vehicles = [];
+        const vehicleTable = document.getElementById('vehicleTable');
+        const addVehicleBtn = document.getElementById('addVehicle');
+        const requireFields = ['Private Car', 'Two-wheeler'].includes(this.value);
+        if (travelModeSelect.value == 'By Road') {
+            vehicleDetails.forEach(detail => detail.style.display = 'block');
+            for (let i = 0; i < drivers.length; i++) {
+                vehicles.push({
+                    mode: travelModeSelect.value,
+                    type: transportationSelect.value,
+                    driverName: drivers[i].value,
+                    vehicleNumber: vehicleNumbers[i].value
+                });
+            }
+            updateVehiclesTable();
+
+        }
+        vehicleRequired.forEach(req => {
+            req.style.display = transportationSelect.value == "Private Car" || transportationSelect.value == "Two-wheeler" ? 'inline' : 'none';
+        });
+        transportationSelect.addEventListener('change', function() {
+            const requireFields = ['Private Car', 'Two-wheeler'].includes(this.value);
+            vehicleRequired.forEach(req => {
+                req.style.display = requireFields ? 'inline' : 'none';
+            });
+        });
+        travelModeSelect.addEventListener('change', function() {
+            // First clear and enable the transportation select
+            transportationSelect.innerHTML = '<option value="">Select</option>';
+            transportationSelect.disabled = false;
+
+            // Hide vehicle details by default
+            vehicleDetails.forEach(detail => detail.style.display = 'none');
+            vehicleRequired.forEach(req => req.style.display = 'none');
+            driverName.required = false;
+            vehicleNumber.required = false;
+
+            // Add options based on selected travel mode
+            switch (this.value) {
+                case 'By Road':
+                    const roadOptions = [
+                        'Bus/Mini Bus',
+                        'Private Car',
+                        'Taxi/Maxi',
+                        'Two-wheeler'
+                    ];
+                    roadOptions.forEach(option => {
+                        const optionElement = new Option(option, option);
+                        transportationSelect.add(optionElement);
+                    });
+                    vehicleDetails.forEach(detail => detail.style.display = 'block');
+                    break;
+
+                case 'By Helicopter':
+                    transportationSelect.add(new Option('Chartered Helicopter', 'Chartered Helicopter'));
+                    vehicleDetails.forEach(detail => detail.style.display = 'none');
+                    break;
+
+                case 'By Walking':
+                    transportationSelect.add(new Option('By Walking', 'By Walking'));
+                    transportationSelect.value = 'By Walking';
+                    vehicleDetails.forEach(detail => detail.style.display = 'none');
+                    break;
+
+                default:
+                    transportationSelect.disabled = true;
+                    vehicleDetails.forEach(detail => detail.style.display = 'none');
+            }
+        });
+        // Add event listener for Add Vehicle button
+        addVehicleBtn.addEventListener('click', function() {
+            const mode = travelModeSelect.value;
+            const type = transportationSelect.value;
+            const driver = driverName.value;
+            const vehNumber = vehicleNumber.value;
+
+            // Validate inputs
+            if (!mode || !type || (type !== 'By Walking' && (!driver || !vehNumber))) {
+                alert('Please fill all required fields');
+                return;
+            }
+
+            // Add vehicle to array
+            vehicles.push({
+                mode: mode,
+                type: type,
+                driverName: driver,
+                vehicleNumber: vehNumber
+            });
+
+            // Update table
+            updateVehiclesTable();
+
+            // Clear inputs
+            driverName.value = '';
+            vehicleNumber.value = '';
+        });
+        // Function to update vehicles table
+        function updateVehiclesTable() {
+            const tbody = vehicleTable.querySelector('tbody');
+            const vehicleTableContainer = vehicleTable.closest('.table-responsive');
+            vehicleTableContainer.style.display = vehicles.length > 0 ? 'block' : 'none';
+            tbody.innerHTML = '';
+            vehicles.forEach((vehicle, index) => {
+                const row = tbody.insertRow();
+                row.innerHTML = `
                         <td>${vehicle.mode}</td>
                         <td>${vehicle.type}</td>
                         <td>${vehicle.driverName}<input type="hidden" name="drivers[]" value="${vehicle.driverName}"></td>
@@ -335,173 +595,281 @@
                             </button>
                         </td>
                     `;
-                });
-
-                // Add event listeners for edit and delete buttons
-                tbody.querySelectorAll('.edit-vehicle').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        const index = this.dataset.index;
-                        const vehicle = vehicles[index];
-                        travelModeSelect.value = vehicle.mode;
-                        travelModeSelect.dispatchEvent(new Event('change'));
-                        transportationSelect.value = vehicle.type;
-                        driverName.value = vehicle.driverName;
-                        vehicleNumber.value = vehicle.vehicleNumber;
-                        vehicles.splice(index, 1);
-                        updateVehiclesTable();
-                    });
-                });
-
-                tbody.querySelectorAll('.delete-vehicle').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        const index = this.dataset.index;
-                        vehicles.splice(index, 1);
-                        updateVehiclesTable();
-                    });
-                });
-            }
-
-            // Add event listener for transportation type
-            transportationSelect.addEventListener('change', function() {
-                const requireFields = ['Private Car', 'Two-wheeler'].includes(this.value);
-                vehicleRequired.forEach(req => {
-                    req.style.display = requireFields ? 'inline' : 'none';
-                });
             });
 
-            // Add event listener for Add Vehicle button
-            addVehicleBtn.addEventListener('click', function() {
-                const mode = travelModeSelect.value;
-                const type = transportationSelect.value;
-                const driver = driverName.value;
-                const vehNumber = vehicleNumber.value;
-
-                // Validate inputs
-                if (!mode || !type || (type !== 'By Walking' && (!driver || !vehNumber))) {
-                    alert('Please fill all required fields');
-                    return;
-                }
-
-                // Add vehicle to array
-                vehicles.push({
-                    mode: mode,
-                    type: type,
-                    driverName: driver,
-                    vehicleNumber: vehNumber
-                });
-
-                // Update table
-                updateVehiclesTable();
-
-                // Clear inputs
-                driverName.value = '';
-                vehicleNumber.value = '';
-            });
-
-
-            // Add/Remove destination functionality
-            const destinationContainer = document.getElementById('destinationContainer');
-            const addDestinationBtn = document.getElementById('addDestination');
-
-            addDestinationBtn.addEventListener('click', function() {
-                const newRow = document.createElement('div');
-                newRow.className = 'destination-row row mb-3';
-                newRow.innerHTML = `
-                    <div class="col-md-5">
-                        <select class="form-select" name="dham[]" required>
-                            <option value="">Plan your destination</option>
-                            <option value="Yamunotri">Yamunotri</option>
-                            <option value="Gangotri">Gangotri</option>
-                            <option value="Kedarnath">Kedarnath</option>
-                            <option value="Badrinath">Badrinath</option>
-                            <option value="Hemkund Sahib">Hemkund Sahib</option>
-                        </select>
-                    </div>
-                    <div class="col-md-5">
-                        <input type="date" class="form-control" name="dhamDate[]" required>
-                    </div>
-                    <div class="col-md-2 d-flex">
-                        <button type="button" class="btn btn-danger remove-destination">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </div>
-                `;
-                destinationContainer.appendChild(newRow);
-
-                const removeBtn = newRow.querySelector('.remove-destination');
-                removeBtn.addEventListener('click', function() {
-                    newRow.remove();
-                });
-            });
-
-            // Add remove functionality to initial destination row
-            document.querySelectorAll('.remove-destination').forEach(btn => {
+            // Add event listeners for edit and delete buttons
+            tbody.querySelectorAll('.edit-vehicle').forEach(btn => {
                 btn.addEventListener('click', function() {
-                    if (destinationContainer.children.length > 1) {
-                        this.closest('.destination-row').remove();
-                    }
+                    const index = this.dataset.index;
+                    const vehicle = vehicles[index];
+                    travelModeSelect.value = vehicle.mode;
+                    travelModeSelect.dispatchEvent(new Event('change'));
+                    transportationSelect.value = vehicle.type;
+                    driverName.value = vehicle.driverName;
+                    vehicleNumber.value = vehicle.vehicleNumber;
+                    vehicles.splice(index, 1);
+                    updateVehiclesTable();
                 });
             });
 
-            // Form validation
-            tourForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-
-                // Basic validation
-                //const dateRange = tourForm.querySelector('.daterange').value;
-                const tourists = tourForm.querySelector('input[type="number"]').value;
-                const travelMode = travelModeSelect.value;
-                const transportation = transportationSelect.value;
-                const destinations = tourForm.querySelectorAll('.destination-row');
-
-                let isValid = true;
-                let errorMessage = '';
-
-
-
-                if (!tourists || tourists < 1 || tourists > 6) {
-                    errorMessage += 'Number of tourists must be between 1 and 6\n';
-                    isValid = false;
-                }
-
-                if (!travelMode) {
-                    errorMessage += 'Please select mode of travel\n';
-                    isValid = false;
-                }
-
-                if (!transportation && travelMode !== 'By Walking') {
-                    errorMessage += 'Please select type of transportation\n';
-                    isValid = false;
-                }
-
-                if (destinations.length < 1) {
-                    errorMessage += 'Please add at least one destination\n';
-                    isValid = false;
-                }
-
-                let hasInvalidDestination = false;
-                destinations.forEach(dest => {
-                    const dham = dest.querySelector('select[name="dham[]"]').value;
-                    const date = dest.querySelector('input[name="dhamDate[]"]').value;
-                    if (!dham || !date) {
-                        hasInvalidDestination = true;
-                    }
+            tbody.querySelectorAll('.delete-vehicle').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const index = this.dataset.index;
+                    vehicles.splice(index, 1);
+                    updateVehiclesTable();
                 });
-
-                if (hasInvalidDestination) {
-                    errorMessage += 'Please fill in all destination details\n';
-                    isValid = false;
-                }
-
-                if (!isValid) {
-                    alert(errorMessage);
-                    return;
-                }
-
-                this.submit();
             });
         }
     </script>
+    <script>
+        // Availability Calendar functionality
+        let currentYear = new Date().getFullYear();
+        let currentMonth = new Date().getMonth();
+        const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September",
+            "October", "November", "December"
+        ];
+        const box = document.createElement('div');
+
+        function generateMonthCard(date, month, year) {
+            const box = document.createElement('div');
+            box.className = 'col-lg-2 col-md-6 mb-3';
+            // Check if date is before today
+            const currentDate = new Date();
+            const cardDate = new Date(year, month, date);
+            const isPastDate = cardDate < new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate
+                .getDate());
+            const bgColor = isPastDate ? '#ff6b6b' : '#9ed7ab';
+            box.innerHTML = `
+                    <div class="date-card">
+                        <div class="date-header">
+                            Date :- ${date>9?date:`0${date}`}-${month+1>9?month+1:`0${month+1}`}-${year}
+                        </div>
+                        <div class="date-body">
+                            <div class="d-flex flex-wrap align-items-center">
+                                <div class="slot-item">
+                                    <div class="dham-name" style="background-color: ${bgColor};">Yamunotri</div>
+                                </div>
+                                <div class="slot-item">
+                                    <div class="dham-name" style="background-color: ${bgColor};">Gangotri</div>
+                                </div>
+                                <div class="slot-item">
+                                    <div class="dham-name" style="background-color: ${bgColor};">Kedarnath</div>
+                                </div>
+                                <div class="slot-item">
+                                    <div class="dham-name" style="background-color: ${bgColor};">Badrinath</div>
+                                </div>
+                                <div class="slot-item">
+                                    <div class="dham-name" style="background-color: ${bgColor};">Hemkund Sahib</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            return box;
+        }
+
+        function updateCalendarDisplay() {
+            const availabilityGrid = document.getElementById('availabilityGrid');
+            const currentMonthDisplay = document.getElementById('currentMonthDisplay');
+            availabilityGrid.innerHTML = '';
+            currentMonthDisplay.textContent = monthNames[currentMonth];
+            let lastDate = new Date(currentYear, currentMonth + 1, 0).getDate();
+            const isAvailableMonth = currentMonth >= 4 && currentMonth <= 9; // May (4) to October (9)
+            if (isAvailableMonth) {
+                // Generate all 12 months
+                for (let date = 1; date <= lastDate; date++) {
+                    availabilityGrid.appendChild(generateMonthCard(date, currentMonth, currentYear));
+                }
+            } else {
+                availabilityGrid.innerHTML = `
+                    <div class="date-card h-100">
+                        <div class="date-body no-data">
+                            <div class="text-center py-4">
+                                <p class="text-muted mb-0">No tours available in this month</p>
+                                <small class="text-muted">(Tours only available from May to October)</small>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        // Event listener for the check availability button
+        document.getElementById('checkAvailability').addEventListener('click', function() {
+            console.log('Check Availability button clicked');
+            updateCalendarDisplay();
+            const modal = new bootstrap.Modal(document.getElementById('availabilityModal'));
+            modal.show();
+        });
+        // Event listeners for year navigation
+        document.getElementById('prevMonth').addEventListener('click', function() {
+            currentMonth--;
+            updateCalendarDisplay();
+        });
+        document.getElementById('nextMonth').addEventListener('click', function() {
+            currentMonth++;
+            updateCalendarDisplay();
+        });
+        box.innerHTML = `
+                    <div class="date-card">
+                        <div class="date-header">
+                            Date: ${formattedDate}
+                        </div>
+                        <div class="date-body">
+                            <div class="d-flex flex-wrap align-items-center">
+                                <div class="slot-item">
+                                    <div class="dham-name">Yamunotri</div>
+                                </div>
+                                <div class="slot-item">
+                                    <div class="dham-name">Gangotri</div>
+                                </div>
+                                <div class="slot-item">
+                                    <div class="dham-name">Kedarnath</div>
+                                </div>
+                                <div class="slot-item">
+                                    <div class="dham-name">Badrinath</div>
+                                </div>
+                                <div class="slot-item">
+                                    <div class="dham-name">Hemkund Sahib</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+        availabilityGrid.appendChild(box);
+        // Show the modal
+        const modal = new bootstrap.Modal(document.getElementById('availabilityModal'));
+        modal.show();
+        // Update minimum end date based on start date
+    </script>
+    <script>
+        if (tourForm) {
+            updateEndDateMin();
+            updateDhamDateConstraints();
+
+            function updateEndDateMin() {
+                const startDate = document.getElementById('tourStartDate').value;
+                const endDateInput = document.getElementById('tourEndDate');
+                if (startDate) {
+                    endDateInput.min = startDate;
+                    // If current end date is before new min date, clear it
+                    if (endDateInput.value && endDateInput.value < startDate) {
+                        endDateInput.value = '';
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Vehicle table styles */
+        #vehicleTable {
+            margin-bottom: 1.5rem;
+        }
+
+        #vehicleTable th {
+            background-color: #f8f9fa;
+            font-weight: 500;
+            padding: 8px;
+        }
+
+        #vehicleTable td {
+            padding: 8px;
+            vertical-align: middle;
+        }
+
+        #vehicleTable .btn-sm {
+            padding: 0.25rem 0.5rem;
+            margin: 0 2px;
+        }
+
+        /* Mode of travel section styles */
+        .vehicle-details .form-control,
+        .vehicle-details .form-select {
+            height: calc(2.5rem + 2px);
+        }
+
+        #availabilityModalLabel {
+            margin-left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .modal-dialog {
+            width: 75%;
+            min-height: 5%;
+            overflow-y: scroll;
+            margin: auto;
+            margin-top: 4%;
+        }
+
+        .slot-grid {
+            display: grid;
+            /* gap: 0.5rem; */
+        }
+
+        .date-body {
+            width: 100%;
+        }
+
+        .date-body>div {
+            width: 100%;
+        }
+
+        .slot-item {
+            width: 50%;
+            display: grid;
+            grid-template-columns: repeat(1, 1fr);
+            gap: 0.25rem;
+            /* padding: 0.25rem; */
+            font-size: 0.9rem;
+            border-bottom: 1px solid #fff;
+        }
+
+        .slot-item:nth-of-type(2n+1) {
+            border-right: 1px solid #fff;
+        }
+
+        .slot-item:last-child {
+            width: 100%;
+            border-bottom: none;
+        }
+
+        .slot-item>* {
+            padding: 2px 5px;
+            text-align: center;
+        }
+
+        .slot-item .dham-name {
+            background-color: #9ed7ab;
+            color: #fff;
+            font-weight: 500;
+        }
+
+        #availabilityModal .modal-dialog {
+            max-width: 80%;
+        }
+
+        .badge {
+            font-weight: normal;
+            font-size: 0.9rem;
+        }
+
+        .date-card {
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .date-header {
+            background-color: #f8f9fa;
+            padding: 2px 5px;
+            border-bottom: 1px solid #dee2e6;
+            font-size: 12px;
+        }
+
+        #availabilityGrid>div {
+            margin: 6px 0px !important;
+        }
+    </style>
     @include('partials.user_footer')
 </body>
 
