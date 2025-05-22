@@ -23,7 +23,7 @@
 <!-- Top Navigation -->
 <nav class="navbar navbar-expand-lg fixed-top py-2 dashboard-nav">
     <div class="container-fluid px-4">
-        <a class="navbar-brand" href="index.html">
+        <a class="navbar-brand" href="/">
             <img src="{{ asset('images/logo_vertical.png') }}" alt="Uttarakhand Tourism" height="50">
         </a>
         <div class="collapse navbar-collapse" id="navbarNav">
